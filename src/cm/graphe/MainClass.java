@@ -13,6 +13,7 @@ import java.io.IOException;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import cm.graphe.vue.GrapheMapping;
+import cm.graphe.vue.MenuMapping;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,18 +31,24 @@ public class MainClass extends Application {
 	//est un BorderPane
 	private Stage stagePrincipal;
 	private BorderPane conteneurPrincipal;
-	private Graphe graphe;
+	private Graphe g = new Graphe("toto");
 	
-	
+	private ObservableList<Noeud> listDesNoeud = FXCollections.observableArrayList();
 	
 	public MainClass() {
-		graphe = new Graphe("toto");
-		graphe.creerNoeud(new Noeud("A"));
-		graphe.creerNoeud(new Noeud("B"));
-		graphe.creerNoeud(new Noeud("C"));
+		//listDesGraphe.add(new Graphe("Titi"));
+		g.creerNoeud(new Noeud("A"));
+		g.creerNoeud(new Noeud("B"));
+		g.creerNoeud(new Noeud("C"));
+		if(g.getNbNoeuds() > 0) {
+			for(Noeud noeud: g.getListeNoeud()) {
+				listDesNoeud.add(noeud);
+			}
+		}
 	}
 	
-	public Graphe getListDeNoeud(){return graphe;}
+	public ObservableList<Noeud> getListDeNoeud(){return listDesNoeud;}
+	public Graphe getGraphe(){return g;}
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -67,6 +74,13 @@ public class MainClass extends Application {
 			Scene scene = new Scene(conteneurPrincipal);
 			//Que nous affectons à notre Stage
 			stagePrincipal.setScene(scene);
+			
+			//Initialisation de notre contrôleur
+			MenuMapping controleur = loader.getController();
+			//On spécifie la classe principale afin de pour récupérer le Stage
+			//Et ainsi fermer l'application
+			controleur.setMainApp(this);
+			
 			//Pour l'afficher
 			stagePrincipal.show();
 		} catch (IOException e) {
@@ -95,7 +109,10 @@ public class MainClass extends Application {
 		}
 	}
 	
-	
+	public Stage getStage() {
+		// TODO Auto-generated method stub
+		return this.stagePrincipal;
+	}
 	
 	public static void main(String[] args) {
 		launch(args);

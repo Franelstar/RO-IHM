@@ -1,12 +1,8 @@
 package cm.graphe.vue;
 
-import java.util.ArrayList;
-
 import cm.graphe.MainClass;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  * @author Franck Anael MBIAYA
@@ -20,14 +16,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class GrapheMapping {
-	private Graphe graphe;
-	private ObservableList<Noeud> listDesNoeud = FXCollections.observableArrayList();
+	@FXML
+    private Accordion accordion;
 	
 	
 	
 	
 	@FXML
-    private TableView<Noeud> noeud;
+    private TableView<Noeud> graphe;
     @FXML
     private TableColumn<Noeud, String> listeGraphe;
     @FXML
@@ -49,7 +45,7 @@ public class GrapheMapping {
         // Initialize the graphe list.
     	nomValeur.setText("");
     	nbreNoeudValeur.setText("");
-    	//listeGraphe.setCellValueFactory(cellData -> cellData.getValue().getLabel());
+    	listeGraphe.setCellValueFactory(cellData -> cellData.getValue().getLabel());
     }
 
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
@@ -57,16 +53,8 @@ public class GrapheMapping {
     public void setMainApp(MainClass mainApp) {
         this.main = mainApp;
         // On lie notre liste observable au composant TableView
-        
-        graphe = main.getListDeNoeud();
-        nomValeur.setText(graphe.getNom().get());
-        nbreNoeudValeur.setText(String.valueOf(graphe.getNbNoeuds()));
-        
-        //noeud.setItems(getListDeNoeud());
-    }
-    
-    public ObservableList<Noeud> getListDeNoeud(){
-    	//listDesNoeud.add(new Noeud("anael"));
-    	return listDesNoeud;
+        graphe.setItems(main.getListDeNoeud());
+        nomValeur.setText(main.getGraphe().getNom().get());
+        nbreNoeudValeur.setText(String.valueOf(main.getGraphe().getNbNoeuds()));
     }
 }
