@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 
+import cm.graphe.model.Arbre;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,6 +23,9 @@ import javafx.beans.property.SimpleStringProperty;
 public class Exporter {
 	
 	private BufferedReader b;
+	
+	String noeudA;
+	String lineA;
 
 	public Exporter(){
 		
@@ -50,7 +54,7 @@ public class Exporter {
             	}
             	if(controle > 3 && controle <= nbreNoeud+3) {
             		g.creerNoeud(new Noeud(readLine.trim()));
-            		Thread.sleep(1 * 1000);
+            		Thread.sleep(0,5 * 1000);
             	}
             	if(controle > nbreNoeud+3) {
             		String[] parts = readLine.trim().split("@-@");
@@ -79,6 +83,8 @@ public class Exporter {
 			
 			String line;
 			
+			buf.write("@\n");
+			
 			buf.write(graphe.getNom().get() + "\n");
 			
 			buf.write(String.valueOf(graphe.getNbNoeuds()) + "\n");
@@ -105,6 +111,10 @@ public class Exporter {
 	
 	public void exporterFichier(Graphe graphe, String nom) {
 		toPNG(graphe, nom);
+	}
+	
+	public void exporterArbre(Arbre graphe, String nom) {
+		arbreToPNG(graphe, nom);
 	}
 	
 	protected static File createFile(String fPath) {
@@ -199,6 +209,50 @@ public class Exporter {
 		}
 		catch ( Exception e ) {
 			e.printStackTrace();
+		}
+	}
+	
+	// dessiner un png avec dot
+	public void arbreToPNG ( Arbre arbre, String fichier ) {
+		try {
+			File sortie = createFile(fichier);
+			BufferedWriter buf = new BufferedWriter( 
+					new OutputStreamWriter(
+							new FileOutputStream( sortie ), Charset.forName("UTF-8").newEncoder()
+							)
+					);
+			
+			lineA = "";
+			noeudA = "";
+			
+			parcourArbre(arbre);
+			
+			buf.write("graph " + arbre.getLabel() + " {\n");
+			
+			buf.write(noeudA);//System.out.println(noeudA);
+			
+			buf.write(lineA);
+			
+			buf.write("}");
+			
+			buf.close();
+ 
+			String commande = "neato -Tpng " + fichier + " -o " + fichier + ".png";
+			Process process = Runtime.getRuntime().exec(commande);
+			process.waitFor();
+		}
+		catch ( Exception e ) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void parcourArbre(Arbre a) {
+		noeudA += a.getLabel() + "\n";
+		if(a.nbEnfants() > 0) {
+			for(Arbre b : a.getEnfants()) {
+				lineA += "\t" + a.getLabel() + "--" + b.getLabel() + "\n";
+				parcourArbre(b);
+			}
 		}
 	}
 }

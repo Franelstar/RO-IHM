@@ -22,6 +22,12 @@
               <MenuItem mnemonicParsing="false" onAction="#nouveau" text="Nouveau" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Arbre">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#dfs" text="DFS" />
+                  <MenuItem mnemonicParsing="false" onAction="#bfs" text="BFS" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Aide">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#apropos" text="A propos" />

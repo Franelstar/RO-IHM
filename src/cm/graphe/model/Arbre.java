@@ -2,13 +2,14 @@ package cm.graphe.model;
 import java.util.ArrayList;
 
 public class Arbre implements Comparable<Arbre> {
-	protected int id;
+	protected String id;
 	protected Arbre parent;
-	protected ArrayList<Arbre> enfants;
+	protected String label;
+	protected ArrayList<Arbre> enfants = new ArrayList<Arbre>();
 	
 	/** Constructeurs */
-	public Arbre(int i) {
-          // a completer
+	public Arbre(String i) {
+          id = i;
 	}
 	
 	public Arbre(int i, ArrayList<Arbre> a) {
@@ -20,6 +21,34 @@ public class Arbre implements Comparable<Arbre> {
 	}
 	/** Fin constructeurs */
 	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String newId) {
+		id = newId;
+	}
+	
+	public String getLabel() {
+		return label;
+	}
+	
+	public void setLabel(String newLabel) {
+		label = newLabel;
+	}
+	
+	public ArrayList<Arbre> getEnfants() {
+		return enfants;
+	}
+	
+	public Arbre getParent() {
+		return parent;
+	}
+	
+	public ArrayList<Arbre> getEnfant() {
+		return enfants;
+	}
+	
 	// Une feuille n'a pas d'enfants
 	public boolean estFeuille() {
           // a completer
@@ -29,22 +58,20 @@ public class Arbre implements Comparable<Arbre> {
 	
 	// modifier pere
 	public boolean ajouteParent(Arbre p) {
-          // a completer
+		parent = p;
 		
 		return true;
 	}
 	
 	// Ne rien faire si a est deja un enfant
 	public boolean ajouteEnfant(Arbre a) {
-          // a completer
+          enfants.add(a);
 		
 		return true;
 	}
 
 	public int nbEnfants() {
-          // a completer
-		
-		return 1;
+		return enfants.size();
 	}
 	
 	// Le nombre total de noeuds
@@ -56,10 +83,10 @@ public class Arbre implements Comparable<Arbre> {
 	@Override
 	public int compareTo(Arbre a) {
 		// TODO Auto-generated method stub
-		if ( id > a.id ) {
+		if ( id.equals(a.getId()) ) {
 			return 1;
 		}
-		else if ( id < a.id ) {
+		else if ( id.equals(a.getId()) ) {
 			return -1;
 		}
 		else {

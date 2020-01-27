@@ -164,6 +164,17 @@ public class Noeud implements Comparable<Noeud> {
 		return successeurs;
 	}
 	
+	public boolean estSuccesseur(String v) {
+		if(successeurs.size() > 0) {
+			for(Noeud n : successeurs) {
+				if(n.label.get().equals(v))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public String getSuccesseursToString() {
 		String retour = "[ ";
 		for(int i = 0; i < successeurs.size(); i++) {

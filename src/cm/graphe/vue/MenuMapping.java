@@ -131,4 +131,14 @@ public class MenuMapping {
 			}
 		}
     }
+    
+    @FXML
+    public void bfs() {
+    	this.main.creerArbre("Création d'un arbre BFS", "BFS");
+    }
+    
+    @FXML
+    public void dfs() {
+    	this.main.creerArbre("Création d'un arbre DFS", "DFS");
+    }
 }

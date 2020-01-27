@@ -83,6 +83,9 @@ public class GrapheMapping {
         // On lie notre liste observable au composant TableView
         graphe.setItems(main.getGraphe().getListeNoeud());
         nomValeur.setText(main.getGraphe().getNom().get());
+      //image
+    	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
+    	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     }
     
   //Méthode qui va mettre les valeurs de notre objet dans les composants
@@ -118,6 +121,7 @@ public class GrapheMapping {
     	//Si aucune ligne n'est sélectionnée, index vaudra -1
     	if (index > -1) {
     		main.afficheCreerNoeud(main.getGraphe().getNoeudIndex(index), "Modifier le Noeud");
+    		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     	}
 	}
     
@@ -127,6 +131,7 @@ public class GrapheMapping {
        	//Si aucune ligne n'est sélectionnée, index vaudra -1
        	if (index > -1) {
        		main.afficheCreerVoisin(main.getGraphe().getNoeudIndex(index), "Créer Voisins");
+       		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
        	}
    	}
     
@@ -137,6 +142,7 @@ public class GrapheMapping {
     	if (index > -1) {
     		main.getGraphe().deleteNoeud(index);
     		main.setSauver(false);
+    		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     	}
     	else {
     		Alert probleme = new Alert(AlertType.ERROR);
