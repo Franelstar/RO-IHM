@@ -11,20 +11,20 @@
         <menus>
           <Menu mnemonicParsing="false" text="Fichier">
             <items>
-              <MenuItem mnemonicParsing="false" text="Nouveau" />
-                  <MenuItem mnemonicParsing="false" text="Ouvrir" />
-                  <MenuItem mnemonicParsing="false" text="Enregistrer" />
+              <MenuItem mnemonicParsing="false" onAction="#creerGraphe" text="Nouveau" />
+                  <MenuItem mnemonicParsing="false" onAction="#openFileLocation" text="Ouvrir" />
+                  <MenuItem mnemonicParsing="false" onAction="#sauverGraphe" text="Enregistrer" />
                   <MenuItem mnemonicParsing="false" onAction="#fermer" text="Quitter" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Noeuds">
             <items>
-              <MenuItem mnemonicParsing="false" text="Nouveau" />
+              <MenuItem mnemonicParsing="false" onAction="#nouveau" text="Nouveau" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu mnemonicParsing="false" text="Aide">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#apropos" text="A propos" />
             </items>
           </Menu>
         </menus>

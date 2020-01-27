@@ -1,5 +1,7 @@
 package cm.graphe.model;
 
+import java.sql.Timestamp;
+
 /**
  * @author franel
  *
@@ -11,8 +13,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Noeud implements Comparable<Noeud> {
+	protected String id = new Timestamp(System.currentTimeMillis()).toString();
 	protected int nbVoisins;
-	protected StringProperty label = new SimpleStringProperty();;
+	protected StringProperty label = new SimpleStringProperty();
 	// c'est plus simple d'ajouter et d'enlever des elements avec une liste qu'avec un array
 	protected ArrayList<Noeud>  successeurs = new ArrayList<Noeud>();
 	protected ArrayList<Integer> arcs = new ArrayList<>();; //arcs sortant 
@@ -39,6 +42,14 @@ public class Noeud implements Comparable<Noeud> {
 		else {
 			System.out.println("Vérifiez le nombre de voisin !");
 		}
+		
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId() {
 		
 	}
 	
@@ -151,6 +162,17 @@ public class Noeud implements Comparable<Noeud> {
 	
 	public ArrayList<Noeud> getSuccesseurs(){
 		return successeurs;
+	}
+	
+	public String getSuccesseursToString() {
+		String retour = "[ ";
+		for(int i = 0; i < successeurs.size(); i++) {
+			retour += successeurs.get(i).getLabel().get();
+			if(i+1 < successeurs.size())
+				retour += " | ";
+		}
+		retour += " ]";
+		return retour;
 	}
 
 }

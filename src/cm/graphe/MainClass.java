@@ -12,15 +12,18 @@ import java.io.IOException;
 
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.vue.CreerGrapheMapping;
+import cm.graphe.vue.CreerNoeudMapping;
+import cm.graphe.vue.CreerVoisinMapping;
 import cm.graphe.vue.GrapheMapping;
 import cm.graphe.vue.MenuMapping;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainClass extends Application {
@@ -31,24 +34,23 @@ public class MainClass extends Application {
 	//est un BorderPane
 	private Stage stagePrincipal;
 	private BorderPane conteneurPrincipal;
-	private Graphe g = new Graphe("toto");
-	
-	private ObservableList<Noeud> listDesNoeud = FXCollections.observableArrayList();
+	private boolean sauver = true;
+	private Graphe g;
 	
 	public MainClass() {
-		//listDesGraphe.add(new Graphe("Titi"));
-		g.creerNoeud(new Noeud("A"));
-		g.creerNoeud(new Noeud("B"));
-		g.creerNoeud(new Noeud("C"));
-		if(g.getNbNoeuds() > 0) {
-			for(Noeud noeud: g.getListeNoeud()) {
-				listDesNoeud.add(noeud);
-			}
-		}
 	}
 	
-	public ObservableList<Noeud> getListDeNoeud(){return listDesNoeud;}
+	public ObservableList<Noeud> getListDeNoeud(){return g.getListeNoeud();}
 	public Graphe getGraphe(){return g;}
+	public void setGraphe(Graphe gra) {g = gra;initialisationContenu();}
+	
+	public void setSauver(boolean s) {
+		sauver = s;
+	}
+	
+	public boolean getSauver() {
+		return sauver;
+	}
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -58,7 +60,8 @@ public class MainClass extends Application {
 		
 		//Nous allons utiliser nos fichier FXML dans ces deux méthodes
 		initialisationConteneurPrincipal();
-		initialisationContenu();
+		if(g != null)
+			initialisationContenu();
 	}
 
 	private void initialisationConteneurPrincipal() {
@@ -107,6 +110,111 @@ public class MainClass extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'une personne et initialiser son contrôleur
+	public void afficheCreerNoeud(Noeud neoud, String titre) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CreerNoeudVue.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle(titre);
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CreerNoeudMapping controller = loader.getController();
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	        controller.setNoeud(neoud);
+	        controller.setMainClass(this);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'une personne et initialiser son contrôleur
+	public void afficheCreerVoisin(Noeud neoud, String titre) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CreerVoisinVue.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle(titre);
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CreerVoisinMapping controller = loader.getController();
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	        controller.setNoeud(neoud);
+	        
+	        controller.setMainClass(this);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'une personne et initialiser son contrôleur
+	public void creerGraphe(String titre) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CreerGraphe.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle(titre);
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CreerGrapheMapping controller = loader.getController();
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	        controller.setMainClass(this);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
 	}
 	
 	public Stage getStage() {

@@ -5,15 +5,15 @@ package cm.graphe.model;
  *
  */
 
-import java.util.ArrayList;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Graphe {
-	protected StringProperty nom = new SimpleStringProperty();;
+	protected StringProperty nom = new SimpleStringProperty();
 	protected int nbNoeuds;
-	protected ArrayList<Noeud> noeuds = new ArrayList<Noeud>();
+	protected ObservableList<Noeud> noeuds = FXCollections.observableArrayList();
 	
 	public Graphe(String n) {
 		//a completer
@@ -63,14 +63,44 @@ public class Graphe {
 	
 	// Retourne un noeud en fonction du nom du noeud
 	// @param : nom = label du noeud
-	@SuppressWarnings("unlikely-arg-type")
 	public Noeud getNoeud(String nom) {
 		for(Noeud nd : noeuds) {
-			if(nd.label.equals(nom)) {
+			if(nd.getLabel().get().equals(nom)) {
 				return nd;
 			}
 		}
 		return null;
+	}
+	
+	// Retourne un noeud en fonction de l'index du noeud
+	// @param : nom = label du noeud
+	public Noeud getNoeudIndex(int index) {
+		if(contentNoeudIndex(index)) {
+			return noeuds.get(index);
+		}
+		return null;
+	}
+		
+	// Retourne un index en fonction de l'ID du noeud
+	// @param : nom = label du noeud
+	public int getNoeudId(String id) {
+		for(Noeud nd : noeuds) {
+			if(nd.getId().equals(id)) {
+				return noeuds.indexOf(nd);
+			}
+		}
+		return -1;
+	}
+	
+	// Retourne un index en fonction du label du noeud
+	// @param : nom = label du noeud
+	public int getNoeudLabelToIndex(String n) {
+		for(Noeud nd : noeuds) {
+			if(nd.getLabel().get().equals(n)) {
+				return noeuds.indexOf(nd);
+			}
+		}
+		return -1;
 	}
 	
 	// Vérifie si un noeud fait partir de la liste des noeuds
@@ -95,16 +125,18 @@ public class Graphe {
 	
 	//Supprimer un noeud
 	//@param : neu = noeud à supprimer
-	public void deleteNoeud(Noeud neu) {
-		for(Noeud n : noeuds) {
-			n.enleveVoisin(neu);
+	public void deleteNoeud(int index) {
+		if(contentNoeudIndex(index)) {
+			for(Noeud n : noeuds) {
+				n.enleveVoisin(getNoeudIndex(index));
+			}
+			noeuds.remove(index);
+			this.nbNoeuds--;
 		}
-		noeuds.remove(noeuds.indexOf(neu));
-		this.nbNoeuds--;
 	}
 	
 	// Retourne la liste des noeuds
-	public ArrayList<Noeud> getListeNoeud(){
+	public ObservableList<Noeud> getListeNoeud(){
 		return this.noeuds;
 	}
 	
