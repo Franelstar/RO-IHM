@@ -227,7 +227,7 @@ public class Exporter {
 			
 			parcourArbre(arbre);
 			
-			buf.write("graph " + arbre.getLabel() + " {\n");
+			buf.write("digraph " + arbre.getLabel() + " {\n");
 			
 			buf.write(noeudA);//System.out.println(noeudA);
 			
@@ -237,7 +237,7 @@ public class Exporter {
 			
 			buf.close();
  
-			String commande = "neato -Tpng " + fichier + " -o " + fichier + ".png";
+			String commande = "dot -Tpng " + fichier + " -o " + fichier + ".png";
 			Process process = Runtime.getRuntime().exec(commande);
 			process.waitFor();
 		}
@@ -250,7 +250,7 @@ public class Exporter {
 		noeudA += a.getLabel() + "\n";
 		if(a.nbEnfants() > 0) {
 			for(Arbre b : a.getEnfants()) {
-				lineA += "\t" + a.getLabel() + "--" + b.getLabel() + "\n";
+				lineA += "\t" + a.getLabel() + "->" + b.getLabel() + "\n";
 				parcourArbre(b);
 			}
 		}

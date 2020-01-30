@@ -1,12 +1,22 @@
-graph aaa {
-	A;
-	B;
-	C;
-	D;
-	E;
-	A -- C;
-	B -- C;
-	B -- E;
-	C -- D;
-	D -- E;
+graph Essai {
+	S1;
+	S2;
+	S3;
+	S4;
+	S5;
+	S6;
+	S7;
+	S8;
+	S1 -- S2;
+	S1 -- S3;
+	S1 -- S4;
+	S2 -- S3;
+	S2 -- S5;
+	S2 -- S6;
+	S4 -- S5;
+	S4 -- S7;
+	S5 -- S6;
+	S5 -- S7;
+	S6 -- S8;
+	S7 -- S8;
 }

@@ -16,6 +16,7 @@ import cm.graphe.model.Noeud;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 
 /**
@@ -30,10 +31,31 @@ public class MenuMapping {
     
     private Exporter exporter = new Exporter();
     
+    @FXML
+    MenuItem sauverG;
+    @FXML
+    MenuItem nouvMenu;
+    @FXML
+    MenuItem bfsMenu;
+    @FXML
+    MenuItem dfsMenu;
+    
+    
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
     //dans notre classe principale
     public void setMainApp(MainClass mainApp) {
         this.main = mainApp;
+        sauverG.setDisable(true);
+        nouvMenu.setDisable(true);
+        bfsMenu.setDisable(true);
+        dfsMenu.setDisable(true);
+    }
+    
+    public void activeMenus() {
+    	sauverG.setDisable(false);
+    	nouvMenu.setDisable(false);
+    	bfsMenu.setDisable(false);
+    	dfsMenu.setDisable(false);
     }
     
 	//Fermer l'application
@@ -133,12 +155,12 @@ public class MenuMapping {
     }
     
     @FXML
-    public void bfs() {
-    	this.main.creerArbre("Création d'un arbre BFS", "BFS");
+    public void dfs() {
+    	this.main.creerArbre("Création d'un arbre DFS", "DFS");
     }
     
     @FXML
-    public void dfs() {
-    	this.main.creerArbre("Création d'un arbre DFS", "DFS");
+    public void bfs() {
+    	this.main.creerArbre("Création d'un arbre BFS", "BFS");
     }
 }

@@ -37,6 +37,9 @@ public class MainClass extends Application {
 	private BorderPane conteneurPrincipal;
 	private boolean sauver = true;
 	private Graphe g;
+	private MenuMapping controleur;
+	
+	
 	
 	public MainClass() {
 	}
@@ -80,7 +83,7 @@ public class MainClass extends Application {
 			stagePrincipal.setScene(scene);
 			
 			//Initialisation de notre contrôleur
-			MenuMapping controleur = loader.getController();
+			controleur = loader.getController();
 			//On spécifie la classe principale afin de pour récupérer le Stage
 			//Et ainsi fermer l'application
 			controleur.setMainApp(this);
@@ -102,6 +105,8 @@ public class MainClass extends Application {
 			//Qui nous ajoutons à notre conteneur principal
 			//Au centre, puisque'il s'agit d'un BorderPane
 			conteneurPrincipal.setCenter(conteneurGraphes);
+			
+			controleur.activeMenus();
 			
 			//Nous récupérons notre mappeur via l'objet FXMLLoader
 			GrapheMapping controleur = loader.getController();

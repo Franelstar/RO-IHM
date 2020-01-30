@@ -13,19 +13,19 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#creerGraphe" text="Nouveau" />
                   <MenuItem mnemonicParsing="false" onAction="#openFileLocation" text="Ouvrir" />
-                  <MenuItem mnemonicParsing="false" onAction="#sauverGraphe" text="Enregistrer" />
+                  <MenuItem fx:id="sauverG" mnemonicParsing="false" onAction="#sauverGraphe" text="Enregistrer" />
                   <MenuItem mnemonicParsing="false" onAction="#fermer" text="Quitter" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Noeuds">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#nouveau" text="Nouveau" />
+              <MenuItem fx:id="nouvMenu" mnemonicParsing="false" onAction="#nouveau" text="Nouveau" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Arbre">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#dfs" text="DFS" />
-                  <MenuItem mnemonicParsing="false" onAction="#bfs" text="BFS" />
+                  <MenuItem fx:id="dfsMenu" mnemonicParsing="false" onAction="#dfs" text="DFS" />
+                  <MenuItem fx:id="bfsMenu" mnemonicParsing="false" onAction="#bfs" text="BFS" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Aide">

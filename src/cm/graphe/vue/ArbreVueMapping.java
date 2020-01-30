@@ -91,7 +91,7 @@ public class ArbreVueMapping {
 	}
 	
 	public Arbre tracerGraphe(Arbre parent) {
-		if(typeArbre.equals("BFS")) {
+		if(typeArbre.equals("DFS")) { //utilise LIFO
 			String init = list.removeLast();
 			Arbre a = new Arbre(main.getGraphe().getNoeud(init).getId());
 			a.setLabel(init);
@@ -130,7 +130,7 @@ public class ArbreVueMapping {
 			
 			return a;
 		}
-		else if(typeArbre.equals("DFS")) {
+		else if(typeArbre.equals("BFS")) {
 			String init = fifo.remove();
 			Arbre a = new Arbre(main.getGraphe().getNoeud(init).getId());
 			a.setLabel(init);
@@ -144,10 +144,6 @@ public class ArbreVueMapping {
 				}
 			}
 			
-			for(String a1 : etat) {
-				System.out.println(a1);
-			}System.out.println("-------------");
-			
 			//on cherche son parent
 			if(parent == null) {
 				a.ajouteParent(null);
@@ -160,11 +156,29 @@ public class ArbreVueMapping {
 							trouver = true;
 							a.ajouteParent(p);
 							p.ajouteEnfant(a);
-							System.out.println("le parent de" + a.getLabel() + " est " + p.getLabel());
 							break;
 						}
 					}
 					p = p.getParent();
+				}
+				if(!trouver) {
+					p = parent;
+					while(p != null && !trouver) {						
+						for(Arbre pp : p.getEnfants()) {
+							for(Noeud neu : main.getListDeNoeud().get(main.getListDeNoeud().indexOf(main.getGraphe().getNoeud(init))).getSuccesseurs()){
+								if(neu.getLabel().get().equals(pp.getLabel())) {
+									trouver = true;
+									a.ajouteParent(pp);
+									pp.ajouteEnfant(a);
+									break;
+								}
+							}
+							if(trouver) {
+								break;
+							}
+						}
+						p = p.getParent();
+					}
 				}
 			}
 			
@@ -186,12 +200,6 @@ public class ArbreVueMapping {
 	//Afin de récupérer le stage de la popup
 	//et pouvoir la clore
 	public void setStage(Stage s) {stageDialogue = s;}
-	
-	//Méthode de contrôle de la validité des données saisies
-	private boolean controlerFormulaire() {
-		boolean isOk = true;	
-		return isOk;
-	}
 	
 	//sauvegarde du noeud, que ce soit une édition ou une création
 	public void valider() {

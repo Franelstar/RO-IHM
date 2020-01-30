@@ -1,7 +1,17 @@
-graph B {
-B
-C
-E
-	B--C
-	B--E
+digraph S8 {
+S8
+S6
+S2
+S5
+S4
+S1
+S3
+S7
+	S8->S6
+	S6->S2
+	S2->S5
+	S5->S4
+	S4->S1
+	S1->S3
+	S8->S7
 }
