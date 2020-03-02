@@ -18,7 +18,7 @@ public class Noeud implements Comparable<Noeud> {
 	protected StringProperty label = new SimpleStringProperty();
 	// c'est plus simple d'ajouter et d'enlever des elements avec une liste qu'avec un array
 	protected ArrayList<Noeud>  successeurs = new ArrayList<Noeud>();
-	protected ArrayList<Integer> arcs = new ArrayList<>();; //arcs sortant 
+	protected ArrayList<Integer> arcs = new ArrayList<>(); //arcs sortant 
 	
 	// cree un noeud isole
 	public Noeud(String l) {
