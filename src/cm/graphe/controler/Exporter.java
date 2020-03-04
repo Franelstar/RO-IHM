@@ -18,6 +18,7 @@ import java.time.ZonedDateTime;
 import cm.graphe.model.Arbre;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.TypeGraphe;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Exporter {
@@ -37,31 +38,45 @@ public class Exporter {
             String readLine = "";
             int controle = 1;
             int nbreNoeud = 0;
-            Graphe g = new Graphe("");
+            Graphe g = new Graphe("", TypeGraphe.SIMPLE_N_O);
             
             while ((readLine = b.readLine()) != null) {
                 if(controle == 1 && !readLine.trim().equals("@")) {
                 	return null;
                 }
-            	if(controle == 2) {
+                if(controle == 2) {
+                	switch (readLine.trim()) {
+	    				case "0":
+	    					g.setTypeGraphe(TypeGraphe.SIMPLE_N_O);
+	    					break;
+	    				case "1":
+	    					g.setTypeGraphe(TypeGraphe.PONDERE_N_O);
+	    					break;
+	    			default:
+	    				g.setTypeGraphe(TypeGraphe.SIMPLE_N_O);
+	    				break;
+	    			}
+                }
+            	if(controle == 3) {
             		g.setNom(new SimpleStringProperty(readLine.trim()));
             	}
-            	if(controle == 3) {
+            	if(controle == 4) {
             		nbreNoeud = Integer.parseInt(readLine.trim());
             		if(nbreNoeud == 0) {
             			return g;
             		}
             	}
-            	if(controle > 3 && controle <= nbreNoeud+3) {
+            	if(controle > 4 && controle <= nbreNoeud+4) {
             		g.creerNoeud(new Noeud(readLine.trim()));
             		Thread.sleep(0,5 * 1000);
             	}
-            	if(controle > nbreNoeud+3) {
+            	if(controle > nbreNoeud+4) {
             		String[] parts = readLine.trim().split("@-@");
             		String part1 = parts[0];
             		String part2 = parts[1];
-            		g.getListeNoeud().get(g.getNoeudLabelToIndex(part1.trim())).ajouteVoisin(g.getNoeud(part2.trim()), 1);
-            		g.getListeNoeud().get(g.getNoeudLabelToIndex(part2.trim())).ajouteVoisin(g.getNoeud(part1.trim()), 1);
+            		int part3 = Integer.parseInt(parts[2]);
+            		g.getListeNoeud().get(g.getNoeudLabelToIndex(part1.trim())).ajouteVoisin(g.getNoeud(part2.trim()), part3);
+            		g.getListeNoeud().get(g.getNoeudLabelToIndex(part2.trim())).ajouteVoisin(g.getNoeud(part1.trim()), part3);
             	}
             	controle++;
             }
@@ -85,6 +100,18 @@ public class Exporter {
 			
 			buf.write("@\n");
 			
+			switch (graphe.getTypeGraphe()) {
+				case SIMPLE_N_O:
+					buf.write("0" + "\n");
+					break;
+				case PONDERE_N_O:
+					buf.write("1" + "\n");
+					break;
+			default:
+				buf.write("0" + "\n");
+				break;
+			}
+			
 			buf.write(graphe.getNom().get() + "\n");
 			
 			buf.write(String.valueOf(graphe.getNbNoeuds()) + "\n");
@@ -96,7 +123,7 @@ public class Exporter {
 			for ( Noeud v : graphe.getListeNoeud() ) {
 				if ( v.getNbVoisins() > 0 ) {
 					for ( Noeud u : v.getSuccesseurs() ) {
-						line = v.getLabel().get() + "@-@" + u.getLabel().get() + "\n";
+						line = v.getLabel().get() + "@-@" + u.getLabel().get() + "@-@" + v.getPoidsUnSucesseur(u.getId()) + "\n";
 						buf.write(line);
 					}
 				}
@@ -187,8 +214,14 @@ public class Exporter {
 			for ( Noeud v : graphe.getListeNoeud() ) {
 				if ( v.getNbVoisins() > 0 ) {
 					for ( Noeud u : v.getSuccesseurs() ) {
-						line = "\t" + v.getLabel().get() + " -- " + u.getLabel().get() + ";\n";
-						if(verifier.indexOf("\t" + u.getLabel().get() + " -- " + v.getLabel().get() + ";\n") == -1) {
+						line = "\t" + v.getLabel().get() + " -- " + u.getLabel().get();
+						if(graphe.getTypeGraphe() == TypeGraphe.PONDERE_N_O) {
+							line += " [label="+v.getPoidsUnSucesseur(u.getId())+"];\n";
+						} else {
+							line += ";\n";
+						}
+						//on se rassure qu'on ne repete pas la ligne
+						if(verifier.indexOf("\t" + u.getLabel().get() + " -- " + v.getLabel().get()) == -1) {
 							buf.write(line);
 							verifier += line;
 						}

@@ -164,6 +164,15 @@ public class Noeud implements Comparable<Noeud> {
 		return successeurs;
 	}
 	
+	public int getPoidsUnSucesseur(String id) {
+		for(Noeud suc : successeurs) {
+			if(suc.getId().equals(id)) {
+				return arcs.get(successeurs.indexOf(suc));
+			}
+		}
+		return 0;
+	}
+	
 	public boolean estSuccesseur(String v) {
 		if(successeurs.size() > 0) {
 			for(Noeud n : successeurs) {
@@ -175,15 +184,15 @@ public class Noeud implements Comparable<Noeud> {
 		return false;
 	}
 	
-	public String getSuccesseursToString() {
+	public StringProperty getSuccesseursToString() {
 		String retour = "[ ";
 		for(int i = 0; i < successeurs.size(); i++) {
-			retour += successeurs.get(i).getLabel().get();
+			retour += successeurs.get(i).getLabel().get() + "(" + arcs.get(i) + ")";
 			if(i+1 < successeurs.size())
 				retour += " | ";
 		}
 		retour += " ]";
-		return retour;
+		return new SimpleStringProperty(retour);
 	}
 
 }

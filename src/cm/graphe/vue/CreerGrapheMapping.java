@@ -5,6 +5,7 @@ import java.util.List;
 
 import cm.graphe.MainClass;
 import cm.graphe.model.Graphe;
+import cm.graphe.model.TypeGraphe;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -70,7 +71,10 @@ public class CreerGrapheMapping {
 	public void valider() {
 		if(controlerFormulaire()) {
 			if(main.getSauver()) {
-				Graphe gra = new Graphe("");
+				
+				TypeGraphe t_g = main.getTypeGraphe();
+				Graphe gra = new Graphe("", t_g);
+				
 				gra.setNom(new SimpleStringProperty(creerGrapheFormulaire.getText()));
 				main.setGraphe(gra);
 				
@@ -89,6 +93,7 @@ public class CreerGrapheMapping {
 				
 				if (erreur.getResult() == ButtonType.OK) {
 					main.getGraphe().setNom(new SimpleStringProperty(creerGrapheFormulaire.getText()));
+					main.getGraphe().setTypeGraphe(main.getTypeGraphe());
 					main.getListDeNoeud().clear();
 				}
 				

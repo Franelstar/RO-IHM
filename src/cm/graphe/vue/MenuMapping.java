@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.TypeGraphe;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -39,6 +40,10 @@ public class MenuMapping {
     MenuItem bfsMenu;
     @FXML
     MenuItem dfsMenu;
+    @FXML
+    MenuItem primMenu;
+    @FXML
+    MenuItem kruskalMenu;
     
     
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
@@ -48,14 +53,33 @@ public class MenuMapping {
         sauverG.setDisable(true);
         nouvMenu.setDisable(true);
         bfsMenu.setDisable(true);
-        dfsMenu.setDisable(true);
+    	dfsMenu.setDisable(true);
+    	primMenu.setDisable(true);
+    	kruskalMenu.setDisable(true);
     }
     
     public void activeMenus() {
     	sauverG.setDisable(false);
     	nouvMenu.setDisable(false);
-    	bfsMenu.setDisable(false);
-    	dfsMenu.setDisable(false);
+    	
+    	if(main.getTypeGraphe() != null) {
+    	switch (main.getTypeGraphe()) {
+			case PONDERE_N_O:
+				bfsMenu.setDisable(true);
+		        dfsMenu.setDisable(true);
+		        primMenu.setDisable(false);
+		    	kruskalMenu.setDisable(false);
+				break;
+			case SIMPLE_N_O:
+				bfsMenu.setDisable(false);
+		        dfsMenu.setDisable(false);
+		        primMenu.setDisable(true);
+		    	kruskalMenu.setDisable(true);
+				break;
+			default:
+				break;
+		}
+    }
     }
     
 	//Fermer l'application
@@ -102,7 +126,15 @@ public class MenuMapping {
     
     @FXML
     public void creerGraphe() {
-    	this.main.creerGraphe("Création d'un nouveau graphe");
+    	this.main.setTypeGraphe(TypeGraphe.SIMPLE_N_O);
+    	this.main.creerGraphe("Création d'un nouveau graphe non orienté non pondéré");
+    	main.setSauver(false);
+    }
+    
+    @FXML
+    public void creerGraphePondere() {
+    	this.main.setTypeGraphe(TypeGraphe.PONDERE_N_O);
+    	this.main.creerGraphe("Création d'un nouveau graphe non orienté pondéré");
     	main.setSauver(false);
     }
     
@@ -127,8 +159,15 @@ public class MenuMapping {
 			int result = fileChooser.showOpenDialog(frame);
 			frame.dispose();
 			if (result == JFileChooser.APPROVE_OPTION) {
-				if(main.getGraphe() == null)
+				if(main.getGraphe() == null) {
 					main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
+					main.setTypeGraphe(main.getGraphe().getTypeGraphe());
+					activeMenus();
+				}else {
+					main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
+					main.setTypeGraphe(main.getGraphe().getTypeGraphe());
+					activeMenus();
+				}
 			}
 		}
 		else {
@@ -149,6 +188,8 @@ public class MenuMapping {
 				frame.dispose();
 				if (result == JFileChooser.APPROVE_OPTION) {
 					main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
+					main.setTypeGraphe(main.getGraphe().getTypeGraphe());
+					activeMenus();
 				}
 			}
 		}
@@ -162,5 +203,15 @@ public class MenuMapping {
     @FXML
     public void bfs() {
     	this.main.creerArbre("Création d'un arbre BFS", "BFS");
+    }
+    
+    @FXML
+    public void prim() {
+    	this.main.creerArbre("Création d'un arbre (Algorithme de Prim)", "PRIM");
+    }
+    
+    @FXML
+    public void kruskal() {
+    	//this.main.creerArbre("Création d'un arbre BFS", "KRUSKAL");
     }
 }

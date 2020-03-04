@@ -4,13 +4,21 @@
 package cm.graphe.vue;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import cm.graphe.MainClass;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.TypeGraphe;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
@@ -26,6 +34,7 @@ public class CreerVoisinMapping {
 	@FXML
 	private VBox vbox;
 	protected ArrayList<CheckBox>  voisins = new ArrayList<CheckBox>();
+	protected ArrayList<TextField>  poids = new ArrayList<TextField>();
 	
 	private MainClass main;	
 	private Noeud noeud;
@@ -41,13 +50,20 @@ public class CreerVoisinMapping {
 				if(noeud.estVoisin(noeu) != -1)
 					check.setSelected(true);
 				voisins.add(check);
+				poids.add(new TextField(String.valueOf(noeud.getPoidsUnSucesseur(noeu.getId()))));
 			}
 		}
 		
 		int i = 0;
 		for(CheckBox che : voisins) {
-			che.setAlignment(Pos.CENTER);
-			grille.add(che, 0, i);
+			HBox hbox = new HBox();
+			hbox.getChildren().add(che);
+			if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O) {
+				hbox.getChildren().add(new Label("       Poids     "));
+				hbox.getChildren().add(poids.get(voisins.indexOf(che)));
+			}
+			hbox.setAlignment(Pos.CENTER);
+			grille.add(hbox, 0, i);
 			i++;
 		}
 		
@@ -70,8 +86,22 @@ public class CreerVoisinMapping {
 	
 	//Méthode de contrôle de la validité des données saisies
 	private boolean controlerFormulaire() {
-		boolean isOk = true;	
-		return isOk;
+		if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O) {
+			boolean isOk = true;	
+			
+			for(TextField p : poids) {
+				if(voisins.get(poids.indexOf(p)).isSelected()) {
+					if(p.getText().isEmpty() || Integer.parseInt(p.getText().trim()) <= 0) {
+						isOk = false;
+					}
+				}
+			}
+			
+			return isOk;
+		}else {
+			boolean isOk = true;	
+			return isOk;
+		}
 	}
 	
 	//sauvegarde du noeud, que ce soit une édition ou une création
@@ -80,8 +110,8 @@ public class CreerVoisinMapping {
 			for(CheckBox che : voisins) {
 				Noeud neud = main.getGraphe().getNoeud(che.getText());
 				if(che.isSelected()) {
-					noeud.ajouteVoisin(neud, 1);
-					neud.ajouteVoisin(noeud, 1);
+					noeud.ajouteVoisin(neud, Integer.parseInt(poids.get(voisins.indexOf(che)).getText()));
+					neud.ajouteVoisin(noeud, Integer.parseInt(poids.get(voisins.indexOf(che)).getText()));
 				}
 				else {
 					noeud.enleveVoisin(neud);
@@ -94,6 +124,15 @@ public class CreerVoisinMapping {
 			//On ferme la boîte de dialogue
 			main.setSauver(false);
 			stageDialogue.close();
+		} else {
+			Alert erreur = new Alert(AlertType.WARNING);
+			erreur.setTitle("Attention ! ");
+			StringBuilder sb = new StringBuilder();
+			List<String> messageErreur = new ArrayList<>();
+			messageErreur.add("Vous avez un poids inférieur à 1");
+			messageErreur.stream().forEach((x) -> sb.append("\n" + x));
+			erreur.setHeaderText(sb.toString());
+			erreur.showAndWait();
 		}
 	}
 }

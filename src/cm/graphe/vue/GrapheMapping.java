@@ -5,6 +5,7 @@ import java.io.File;
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.TypeGraphe;
 
 /**
  * @author Franck Anael MBIAYA
@@ -29,6 +30,8 @@ public class GrapheMapping {
     private TableView<Noeud> graphe;
     @FXML
     private TableColumn<Noeud, String> listeGraphe;
+    @FXML
+    private TableColumn<Noeud, String> listenbre;
     @FXML
     private Label nomValeur;
     @FXML
@@ -71,6 +74,7 @@ public class GrapheMapping {
     	voisinNoeud.setVisible(false);
     	supprimerNoeud.setVisible(false);
     	listeGraphe.setCellValueFactory(cellData -> cellData.getValue().getLabel());
+    	listenbre.setCellValueFactory(cellData -> cellData.getValue().getSuccesseursToString());
     	
     	graphe.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> initializeDescription(newValue));
@@ -82,10 +86,38 @@ public class GrapheMapping {
         this.main = mainApp;
         // On lie notre liste observable au composant TableView
         graphe.setItems(main.getGraphe().getListeNoeud());
-        nomValeur.setText(main.getGraphe().getNom().get());
+        String type = "";
+        switch (main.getGraphe().getTypeGraphe()) {
+	        case SIMPLE_N_O:
+				type = " (Graphe non orienté non pondéré)";
+				break;
+			case PONDERE_N_O:
+				type = " (Graphe non orienté pondéré)";
+				break;
+		default:
+			type = " (Graphe non orienté non pondéré)";
+			break;
+		}
+        nomValeur.setText(main.getGraphe().getNom().get() + type);
       //image
     	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
     	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+    }
+    
+    public void setNomGraphe() {
+    	String type = "";
+        switch (main.getGraphe().getTypeGraphe()) {
+	        case SIMPLE_N_O:
+				type = " (Graphe non orienté non pondéré)";
+				break;
+			case PONDERE_N_O:
+				type = " (Graphe non orienté pondéré)";
+				break;
+		default:
+			type = " (Graphe non orienté non pondéré)";
+			break;
+		}
+        nomValeur.setText(main.getGraphe().getNom().get() + type);
     }
     
   //Méthode qui va mettre les valeurs de notre objet dans les composants
@@ -107,7 +139,7 @@ public class GrapheMapping {
     		//ATTENTION : les accesseurs retournent des objets Property Java FX
     		//Pour récupérer leurs vrais valeurs vous devez utiliser la méthode get()
     		nomNoeudValeur.setText(n.getLabel().get());
-    		listeVoisin.setText(n.getSuccesseursToString());
+    		listeVoisin.setText(n.getSuccesseursToString().get());
     		labelListeVoisin.setVisible(true);
     		modifierNoeud.setVisible(true);
     		voisinNoeud.setVisible(true);

@@ -14,19 +14,31 @@ public class Graphe {
 	protected StringProperty nom = new SimpleStringProperty();
 	protected int nbNoeuds;
 	protected ObservableList<Noeud> noeuds = FXCollections.observableArrayList();
+	protected TypeGraphe typeGraphe;
 	
-	public Graphe(String n) {
+	public Graphe(String n, TypeGraphe t) {
 		//a completer
 		nom.setValue(n);
 		nbNoeuds = 0;
+		typeGraphe = t;
 	}
 	
-	public Graphe(Noeud[] nds, String n) {
+	public Graphe(Noeud[] nds, String n, TypeGraphe t) {
 		nom.set(n);
 		nbNoeuds = nds.length;
 		for(Noeud nd : nds) {
 			noeuds.add(nd);
 		}
+		
+		typeGraphe = t;
+	}
+	
+	public TypeGraphe getTypeGraphe() {
+		return typeGraphe;
+	}
+	
+	public void setTypeGraphe(TypeGraphe t) {
+		typeGraphe = t;
 	}
 	
 	public StringProperty getNom() {

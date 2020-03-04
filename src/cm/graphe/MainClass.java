@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.TypeGraphe;
 import cm.graphe.vue.ArbreVueMapping;
 import cm.graphe.vue.CreerGrapheMapping;
 import cm.graphe.vue.CreerNoeudMapping;
@@ -38,6 +39,8 @@ public class MainClass extends Application {
 	private boolean sauver = true;
 	private Graphe g;
 	private MenuMapping controleur;
+	private GrapheMapping controleurMapping = null;
+	private TypeGraphe typeGraphe = null;
 	
 	
 	
@@ -46,7 +49,10 @@ public class MainClass extends Application {
 	
 	public ObservableList<Noeud> getListDeNoeud(){return g.getListeNoeud();}
 	public Graphe getGraphe(){return g;}
-	public void setGraphe(Graphe gra) {g = gra;initialisationContenu();}
+	public void setGraphe(Graphe gra) {
+		g = gra;
+		initialisationContenu();
+	}
 	
 	public void setSauver(boolean s) {
 		sauver = s;
@@ -54,6 +60,14 @@ public class MainClass extends Application {
 	
 	public boolean getSauver() {
 		return sauver;
+	}
+	
+	public void setTypeGraphe(TypeGraphe t) {
+		typeGraphe = t;
+	}
+	
+	public TypeGraphe getTypeGraphe() {
+		return typeGraphe;
 	}
 	
 	@Override
@@ -109,10 +123,10 @@ public class MainClass extends Application {
 			controleur.activeMenus();
 			
 			//Nous récupérons notre mappeur via l'objet FXMLLoader
-			GrapheMapping controleur = loader.getController();
+			controleurMapping = loader.getController();
 			//Nous lui passons notre instance de classe
 			//pour qu'il puisse récupérer notre liste observable
-			controleur.setMainApp(this);
+			controleurMapping.setMainApp(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -190,7 +204,7 @@ public class MainClass extends Application {
 	}
 	
 	//Méthode qui va va afficher la popup d'édition
-	//ou de création d'une personne et initialiser son contrôleur
+	//ou de création d'un graphe et initialiser son contrôleur
 	public void creerGraphe(String titre) {
 	    try {
 	        FXMLLoader loader = new FXMLLoader();
@@ -218,6 +232,10 @@ public class MainClass extends Application {
 	        // Show the dialog and wait until the user closes it
 	        stageDialogue.showAndWait();
 	        //return controller.isOkClicked();
+	        
+	        //On changer le mom du graphe
+	        if(this.controleurMapping != null)
+	        	this.controleurMapping.setNomGraphe();
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
