@@ -45,6 +45,11 @@
                   </Menu>
                </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Court chemin">
+              <items>
+                <MenuItem fx:id="dijkstraMenu" mnemonicParsing="false" onAction="#dijkstra" text="Dijkstra" />
+              </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Aide">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#apropos" text="A propos" />

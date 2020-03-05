@@ -45,6 +45,8 @@ public class MenuMapping {
     Menu primMenu;
     @FXML
     MenuItem kruskalMenu;
+    @FXML
+    MenuItem dijkstraMenu;
     
     
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
@@ -57,11 +59,13 @@ public class MenuMapping {
     	dfsMenu.setDisable(true);
     	primMenu.setDisable(true);
     	kruskalMenu.setDisable(true);
+    	dijkstraMenu.setDisable(true);
     }
     
     public void activeMenus() {
     	sauverG.setDisable(false);
     	nouvMenu.setDisable(false);
+    	dijkstraMenu.setDisable(false);
     	
     	if(main.getTypeGraphe() != null) {
     	switch (main.getTypeGraphe()) {
@@ -224,5 +228,10 @@ public class MenuMapping {
     @FXML
     public void kruskalMax() {
     	this.main.creerArbre("Création d'un arbre (Algorithme de KRUSKAL maximal)", "KRUSKAL_MAX");
+    }
+    
+    @FXML
+    public void dijkstra() {
+    	this.main.creerCheminCourt("Création du plus court chemin (Algorithme de DIJKSTRA)", "DIJKSTRA");
     }
 }

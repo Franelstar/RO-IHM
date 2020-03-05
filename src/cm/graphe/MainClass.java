@@ -14,6 +14,7 @@ import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import cm.graphe.model.TypeGraphe;
 import cm.graphe.vue.ArbreVueMapping;
+import cm.graphe.vue.CourtCheminMapping;
 import cm.graphe.vue.CreerGrapheMapping;
 import cm.graphe.vue.CreerNoeudMapping;
 import cm.graphe.vue.CreerVoisinMapping;
@@ -284,6 +285,40 @@ public class MainClass extends Application {
 	    	e.printStackTrace();
 	    }
 	}
+	
+	//Méthode qui va va afficher la popup d'édition
+		//ou de création d'une personne et initialiser son contrôleur
+		public void creerCheminCourt(String titre, String type) {
+		    try {
+		        FXMLLoader loader = new FXMLLoader();
+		        loader.setLocation(MainClass.class.getResource("vue/CourtCheminVue.fxml"));
+		        AnchorPane page = (AnchorPane) loader.load();
+		        
+		        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+		        Stage stageDialogue = new Stage();
+		        stageDialogue.setTitle(titre);
+		        stageDialogue.initModality(Modality.WINDOW_MODAL);
+		        
+		        //Avec cette instruction, notre fenêtre modifiée sera modale
+		        //par rapport à notre stage principal
+		        stageDialogue.initOwner(stagePrincipal);
+		        Scene scene = new Scene(page);
+		        stageDialogue.setScene(scene);
+		        
+		        // initialisation du contrôleur
+		        CourtCheminMapping controller = loader.getController();
+		        //On passe le noeud avec laquelle nous souhaitons travailler
+		        //une existante ou une nouvelle
+		        controller.setMainClass(this, type);
+		        controller.setStage(stageDialogue);
+		        
+		        // Show the dialog and wait until the user closes it
+		        stageDialogue.showAndWait();
+		        //return controller.isOkClicked();
+		    } catch (IOException e) {
+		    	e.printStackTrace();
+		    }
+		}
 	
 	public Stage getStage() {
 		// TODO Auto-generated method stub
