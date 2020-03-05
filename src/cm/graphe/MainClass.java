@@ -22,10 +22,12 @@ import cm.graphe.vue.MenuMapping;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class MainClass extends Application {
@@ -94,7 +96,15 @@ public class MainClass extends Application {
 			//On définit une scène principale avec notre conteneur
 			Scene scene = new Scene(conteneurPrincipal);
 			//Que nous affectons à notre Stage
+			
+			Screen screen = Screen.getPrimary();
+			Rectangle2D bounds = screen.getVisualBounds();
+			
 			stagePrincipal.setScene(scene);
+			stagePrincipal.setX(bounds.getMinX());
+			stagePrincipal.setY(bounds.getMinY());
+			stagePrincipal.setWidth(bounds.getWidth());
+			stagePrincipal.setHeight(bounds.getHeight());
 			
 			//Initialisation de notre contrôleur
 			controleur = loader.getController();

@@ -27,6 +27,16 @@ public class Noeud implements Comparable<Noeud> {
 		nbVoisins = 0;
 	}
 	
+	// cree un noeud isole
+		public Noeud(Noeud neu) {
+			//a completer
+			label.set(neu.getLabel().get());
+			for(Noeud suc : neu.getSuccesseurs()) {
+				this.ajouteVoisin(suc, suc.getPoidsUnSucesseur(neu.getId()));
+				neu.ajouteVoisin(suc, suc.getPoidsUnSucesseur(this.getId()));
+			}
+		}
+	
 	// cree un noeud a partir d'une liste de voisins
 	// les arcs sont de poids 1
 	public Noeud(String l, int i, Noeud[] noeuds) {

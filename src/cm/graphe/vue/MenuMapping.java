@@ -17,6 +17,7 @@ import cm.graphe.model.TypeGraphe;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 
@@ -41,7 +42,7 @@ public class MenuMapping {
     @FXML
     MenuItem dfsMenu;
     @FXML
-    MenuItem primMenu;
+    Menu primMenu;
     @FXML
     MenuItem kruskalMenu;
     
@@ -207,11 +208,21 @@ public class MenuMapping {
     
     @FXML
     public void prim() {
-    	this.main.creerArbre("Création d'un arbre (Algorithme de Prim)", "PRIM");
+    	this.main.creerArbre("Création d'un arbre (Algorithme de Prim minimal)", "PRIM");
     }
     
     @FXML
+    public void prim_maxx() {
+    	this.main.creerArbre("Création d'un arbre (Algorithme de Prim maximal)", "PRIM_MAX");
+    }  
+    
+    @FXML
     public void kruskal() {
-    	//this.main.creerArbre("Création d'un arbre BFS", "KRUSKAL");
+    	this.main.creerArbre("Création d'un arbre (Algorithme de KRUSKAL minimal)", "KRUSKAL");
+    }
+    
+    @FXML
+    public void kruskalMax() {
+    	this.main.creerArbre("Création d'un arbre (Algorithme de KRUSKAL maximal)", "KRUSKAL_MAX");
     }
 }

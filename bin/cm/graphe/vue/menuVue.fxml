@@ -5,7 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cm.graphe.vue.MenuMapping">
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cm.graphe.vue.MenuMapping">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -31,8 +31,18 @@
                <items>
                   <MenuItem fx:id="dfsMenu" mnemonicParsing="false" onAction="#dfs" text="DFS" />
                   <MenuItem fx:id="bfsMenu" mnemonicParsing="false" onAction="#bfs" text="BFS" />
-                  <MenuItem fx:id="primMenu" mnemonicParsing="false" onAction="#prim" text="Prim" />
-                  <MenuItem fx:id="kruskalMenu" mnemonicParsing="false" onAction="#kruskal" text="Kruskal" />
+                  <Menu fx:id="primMenu" mnemonicParsing="false" text="Prim">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#prim" text="Prim mininum" />
+                      <MenuItem mnemonicParsing="false" onAction="#prim_maxx" text="Prim maximum" />
+                    </items>
+                  </Menu>
+                  <Menu fx:id="kruskalMenu" mnemonicParsing="false" text="Kruskal">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#kruskal" text="Kruskal minimum" />
+                        <MenuItem mnemonicParsing="false" onAction="#kruskalMax" text="Kruskal maximum" />
+                    </items>
+                  </Menu>
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Aide">

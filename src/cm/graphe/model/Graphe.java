@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class Graphe {
+public class Graphe{
 	protected StringProperty nom = new SimpleStringProperty();
 	protected int nbNoeuds;
 	protected ObservableList<Noeud> noeuds = FXCollections.observableArrayList();
@@ -154,5 +154,16 @@ public class Graphe {
 	
 	public void affiche() {
     //a completer
-	}	
+	}
+	
+	public Graphe clone() {
+		Graphe g = null;
+		try {
+			g = (Graphe) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return g;
+		}
 }
