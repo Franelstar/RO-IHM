@@ -102,10 +102,10 @@ public class MainClass extends Application {
 			Rectangle2D bounds = screen.getVisualBounds();
 			
 			stagePrincipal.setScene(scene);
-			stagePrincipal.setX(bounds.getMinX());
-			stagePrincipal.setY(bounds.getMinY());
-			stagePrincipal.setWidth(bounds.getWidth());
-			stagePrincipal.setHeight(bounds.getHeight());
+			//stagePrincipal.setX(bounds.getMinX());
+			//stagePrincipal.setY(bounds.getMinY());
+			//stagePrincipal.setWidth(bounds.getWidth());
+			//stagePrincipal.setHeight(bounds.getHeight());
 			
 			//Initialisation de notre contrôleur
 			controleur = loader.getController();

@@ -1,28 +1,52 @@
 package cm.graphe.model;
 
-/**
- * @author Franck Anael MBIAYA
- *
- */
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * <b>Class Graphe</b><br><br>
+ * 
+ * Cette classe permet de créer une instance de <b>Graphe</b>.
+ * Un graphe est un ensemble de noeuds structurés d'une certaine façon.<br>
+ * 
+ * @author Franck Anael MBIAYA
+ * 
+ * @see Noeud
+ * 
+ * @version 1.0
+ */
 public class Graphe{
-	protected StringProperty nom = new SimpleStringProperty();
+	protected StringProperty nom = new SimpleStringProperty(); //Identifiant du graphe
 	protected int nbNoeuds;
-	protected ObservableList<Noeud> noeuds = FXCollections.observableArrayList();
-	protected TypeGraphe typeGraphe;
+	protected ObservableList<Noeud> noeuds = FXCollections.observableArrayList(); //Liste des noeuds
+	protected TypeGraphe typeGraphe; //Type de graphe
 	
+	/**
+	 * Création d'un graphe à partir de son nom et de son type.<br>
+	 * Le nombre de noeud dès la création sera 0.<br>
+	 * 
+	 * @param n Nom du graphe à créer
+	 * @param t Type du graphe à créer
+	 * 
+	 * @see TypeGraphe
+	 */
 	public Graphe(String n, TypeGraphe t) {
-		//a completer
 		nom.setValue(n);
 		nbNoeuds = 0;
 		typeGraphe = t;
 	}
 	
+	/**
+	 * Création d'un graphe à partir de son nom, de son type et de la liste de ses noeuds.<br>
+	 * 
+	 * @param n Nom du graphe à créer
+	 * @param t Type du graphe à créer
+	 * @param nds Liste des noeuds
+	 * 
+	 * @see TypeGraphe
+	 */
 	public Graphe(Noeud[] nds, String n, TypeGraphe t) {
 		nom.set(n);
 		nbNoeuds = nds.length;
@@ -33,30 +57,71 @@ public class Graphe{
 		typeGraphe = t;
 	}
 	
+	/**
+	 * <b>getTypeGraphe</b><br><br>
+	 * 
+	 * Retourne le type du graphe.<br>
+	 * 
+	 * @return TypeGraphe
+	 * 
+	 * @see TypeGraphe
+	 */
 	public TypeGraphe getTypeGraphe() {
 		return typeGraphe;
 	}
 	
+	/**
+	 * <b>setTypeGraphe</b><br><br>
+	 * 
+	 * Changer le type du graphe.<br>
+	 * 
+	 * @see TypeGraphe
+	 */
 	public void setTypeGraphe(TypeGraphe t) {
 		typeGraphe = t;
 	}
 	
+	/**
+	 * <b>getNom</b><br><br>
+	 * 
+	 * Retourne le nom du graphe.<br>
+	 * 
+	 * @return String
+	 */
 	public StringProperty getNom() {
 		return nom;
 	}
 	
+	/**
+	 * <b>setNom</b><br><br>
+	 * 
+	 * Change le nom du graphe.<br>
+	 * 
+	 * @param nom Nouveau nom
+	 */
 	public void setNom(StringProperty nom) {
 		this.nom = nom;
 	}
 	
+	/**
+	 * <b>getNbNoeuds</b><br><br>
+	 * 
+	 * Retourne le nombre de noeuds du graphe.<br>
+	 * 
+	 * @return Int
+	 */
 	public int getNbNoeuds() {
 		return nbNoeuds;
 	}
 	
-	public void setNbNoeuds(int nbNoeuds) {
-		this.nbNoeuds = nbNoeuds;
-	}
-	
+	/**
+	 * <b>creerNoeud</b><br><br>
+	 * 
+	 * Créer un nouveau noeud.<br>
+	 * Ce nouveau noeud ne doit pas avoir un nom identique à un noeud déjà existant.<br>
+	 * 
+	 * @param neu Noeud à créer
+	 */
 	public void creerNoeud(Noeud neu) {
 		if(!contentNoeud(neu.getLabel().get())) {
 			noeuds.add(neu);
@@ -64,8 +129,13 @@ public class Graphe{
 		}
 	}
 	
-	// Retourne la liste des noeuds préformaté
-	// @ param
+	/**
+	 * <b>getNoeuds</b><br><br>
+	 * 
+	 * Retourne la liste de noeuds formatée.<br>
+	 * 
+	 * @return String
+	 */
 	public String getNoeuds() {
 		String r = "";
 		for(Noeud nd : noeuds)
@@ -73,8 +143,16 @@ public class Graphe{
 		return r;
 	}
 	
-	// Retourne un noeud en fonction du nom du noeud
-	// @param : nom = label du noeud
+	/**
+	 * <b>getNoeud</b><br><br>
+	 * 
+	 * Retourne un noeud en fontion de son nom.<br>
+	 * Si ce noeud n'existe pas, on retourne null.<br>
+	 * 
+	 * @param nom Nom du noeud à retourner
+	 * 
+	 * @return Noeud ou null
+	 */
 	public Noeud getNoeud(String nom) {
 		for(Noeud nd : noeuds) {
 			if(nd.getLabel().get().equals(nom)) {
@@ -84,8 +162,16 @@ public class Graphe{
 		return null;
 	}
 	
-	// Retourne un noeud en fonction de l'index du noeud
-	// @param : nom = label du noeud
+	/**
+	 * <b>getNoeudIndex</b><br><br>
+	 * 
+	 * Retourne un noeud en fontion de son index dans la liste des noeuds.<br>
+	 * Si cet index n'existe pas, on retourne null.<br>
+	 * 
+	 * @param index Index du noeud à retourner
+	 * 
+	 * @return Noeud ou null
+	 */
 	public Noeud getNoeudIndex(int index) {
 		if(contentNoeudIndex(index)) {
 			return noeuds.get(index);
@@ -93,8 +179,16 @@ public class Graphe{
 		return null;
 	}
 		
-	// Retourne un index en fonction de l'ID du noeud
-	// @param : nom = label du noeud
+	/**
+	 * <b>getNoeudId</b><br><br>
+	 * 
+	 * Retourne l'index d'un noeud dans la liste des noeuds en fontion de son identifiant.<br>
+	 * Si cet identifiant n'existe pas, on retourne -1.<br>
+	 * 
+	 * @param id Identifiant du noeud dont on veut l'index
+	 * 
+	 * @return Integer
+	 */
 	public int getNoeudId(String id) {
 		for(Noeud nd : noeuds) {
 			if(nd.getId().equals(id)) {
@@ -104,8 +198,16 @@ public class Graphe{
 		return -1;
 	}
 	
-	// Retourne un index en fonction du label du noeud
-	// @param : nom = label du noeud
+	/**
+	 * <b>getNoeudLabelToIndex</b><br><br>
+	 * 
+	 * Retourne l'index d'un noeud dans la liste des noeuds en fontion de son nom.<br>
+	 * Si ce nom n'existe pas, on retourne -1.<br>
+	 * 
+	 * @param n nom du noeud dont on veut l'index
+	 * 
+	 * @return Integer
+	 */
 	public int getNoeudLabelToIndex(String n) {
 		for(Noeud nd : noeuds) {
 			if(nd.getLabel().get().equals(n)) {
@@ -115,8 +217,17 @@ public class Graphe{
 		return -1;
 	}
 	
-	// Vérifie si un noeud fait partir de la liste des noeuds
-	// @param : c = label du noeud
+	/**
+	 * <b>contentNoeud</b><br><br>
+	 * 
+	 * Vérifie si un noeud appatient au graphe.<br>
+	 * En entrée on utilise le nom du noeud.<br>
+	 * Si ce noeud existe, on retourne true. Dans le cas contraire on retourne false.<br>
+	 * 
+	 * @param c Nom du noeud
+	 * 
+	 * @return Boolean
+	 */
 	public boolean contentNoeud(String c) {
 		for(Noeud nd : noeuds) {
 			if(nd.getLabel().get().equals(c))
@@ -125,8 +236,17 @@ public class Graphe{
 		return false;
 	}
 	
-	// Vérifie si un index identifie un noeud
-	// @param : c = index du noeud
+	/**
+	 * <b>contentNoeudIndex</b><br><br>
+	 * 
+	 * Vérifie si un noeud appatient au graphe.<br>
+	 * En entrée on utilise l'index du noeud.<br>
+	 * Si ce noeud existe, on retourne true. Dans le cas contraire on retourne false.<br>
+	 * 
+	 * @param c Index du noeud
+	 * 
+	 * @return Boolean
+	 */
 	public boolean contentNoeudIndex(int c) {
 		for(int i = 0; i < noeuds.size(); i++) {
 			if(i == c)
@@ -135,8 +255,14 @@ public class Graphe{
 		return false;
 	}
 	
-	//Supprimer un noeud
-	//@param : neu = noeud à supprimer
+	/**
+	 * <b>deleteNoeud</b><br><br>
+	 * 
+	 * Supprimer un noeud du graphe à partir de l'index du noeud dans la liste de noeuds.<br>
+	 * Si le noeud n'existe pas, on ne fait rien.<br>
+	 * 
+	 * @param index Index du noeud à supprimer
+	 */
 	public void deleteNoeud(int index) {
 		if(contentNoeudIndex(index)) {
 			for(Noeud n : noeuds) {
@@ -147,23 +273,14 @@ public class Graphe{
 		}
 	}
 	
-	// Retourne la liste des noeuds
+	/**
+	 * <b>getListeNoeud</b><br><br>
+	 * 
+	 * Retourne la liste des noeuds.<br>
+	 * 
+	 * @return ObservableList de noeuds
+	 */
 	public ObservableList<Noeud> getListeNoeud(){
 		return this.noeuds;
 	}
-	
-	public void affiche() {
-    //a completer
-	}
-	
-	public Graphe clone() {
-		Graphe g = null;
-		try {
-			g = (Graphe) super.clone();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return g;
-		}
 }

@@ -1,46 +1,50 @@
 package cm.graphe.model;
 
 import java.sql.Timestamp;
-
-/**
- * @author franel
- *
- */
-
 import java.util.ArrayList;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Noeud implements Comparable<Noeud> {
-	protected String id = new Timestamp(System.currentTimeMillis()).toString();
+/**
+ * <b>Class Noeud</b><br><br>
+ * 
+ * Cette classe permet de créer une instance de <b>noeud</b> pour un graphe.
+ * Ce noeud peut être utilisé pour tous les types de graphe.<br>
+ * 
+ * @author Franck Anael MBIAYA
+ * 
+ * @see Graphe
+ * 
+ * @version 1.0
+ */
+public class Noeud {
+	protected String id = new Timestamp(System.currentTimeMillis()).toString(); //Identifiant du noeud
 	protected int nbVoisins;
-	protected StringProperty label = new SimpleStringProperty();
-	// c'est plus simple d'ajouter et d'enlever des elements avec une liste qu'avec un array
-	protected ArrayList<Noeud>  successeurs = new ArrayList<Noeud>();
-	protected ArrayList<Integer> arcs = new ArrayList<>(); //arcs sortant 
+	protected StringProperty label = new SimpleStringProperty(); //Nom du noeud (est unique pour un noeud)
+	protected ArrayList<Noeud>  successeurs = new ArrayList<Noeud>(); //Liste des noeuds successeur
+	protected ArrayList<Integer> arcs = new ArrayList<>(); //Poids des noeuds successeurs 
 	
-	// cree un noeud isole
+	/**
+	 * Création d'un noeud à partir de son nom.<br>
+	 * Le nombre de voisin dès la création sera 0.<br>
+	 * 
+	 * @param l Nom du noeud à créer
+	 */
 	public Noeud(String l) {
-		//a completer
 		label.set(l);
 		nbVoisins = 0;
 	}
 	
-	// cree un noeud isole
-		public Noeud(Noeud neu) {
-			//a completer
-			label.set(neu.getLabel().get());
-			for(Noeud suc : neu.getSuccesseurs()) {
-				this.ajouteVoisin(suc, suc.getPoidsUnSucesseur(neu.getId()));
-				neu.ajouteVoisin(suc, suc.getPoidsUnSucesseur(this.getId()));
-			}
-		}
-	
-	// cree un noeud a partir d'une liste de voisins
-	// les arcs sont de poids 1
+	/**
+	 * Création d'un noeud à partir de son nom et de ses noeuds voisins.<br>
+	 * Le nombre de voisin dès la création sera donné dans la variable i.<br>
+	 * La valeur de i doit correspondre avec le nombre de voisin dans la variable noeuds. Dans le cas contraire, le noeud ne sera pas créé.<br>
+	 * 
+	 * @param l Nom du noeud à créer
+	 * @param i Nombre de voisin
+	 * @param noeuds Liste des noeuds voisins
+	 */
 	public Noeud(String l, int i, Noeud[] noeuds) {
-		//a completer
 		if(i != noeuds.length) {
 			label.set(l);
 			nbVoisins = i;
@@ -52,41 +56,64 @@ public class Noeud implements Comparable<Noeud> {
 		else {
 			System.out.println("Vérifiez le nombre de voisin !");
 		}
-		
 	}
 	
+	/**
+	 * <b>getId</b><br><br>
+	 * 
+	 * Retourne l'identifiant du noeud.<br>
+	 * L'identifiant est une chaine de caractère.<br>
+	 * 
+	 * @return String
+	 */
 	public String getId() {
 		return id;
 	}
 	
-	public void setId() {
-		
-	}
-	
+	/**
+	 * <b>getLabel</b><br><br>
+	 * 
+	 * Retourne le nom du noeud.<br>
+	 * Le nom est une chaine de caractère.<br>
+	 * 
+	 * @return String
+	 */
 	public StringProperty getLabel() {
 		return label;
 	}
 	
+	/**
+	 * <b>setLabel</b><br><br>
+	 * 
+	 * Modifie le nom du noeud.<br>
+	 * Le nom doit être une chaine de caractère.<br>
+	 * 
+	 * @param label Nouveau nom du noeud
+	 */
 	public void setLabel(StringProperty label) {
 		this.label = label;
 	}
 	
+	/**
+	 * <b>getNbVoisins</b><br><br>
+	 * 
+	 * Retourne le nombre de voisin du noeud.<br>
+	 * Pour un graphe orienté, retourne le nombre de voisin sortant.<br>
+	 * 
+	 * @return Integer
+	 */
 	public int getNbVoisins() {
 		return this.nbVoisins;
 	}
 	
-	public void setNbVoisins(int NbreVoisin) {
-		this.nbVoisins = NbreVoisin;
-	}
-	
-	// renvoie le degre sortant, qui vaut la somme des elements de arcs
-	// @param:
-	public int degreSortant() {
-		return this.arcs.size();
-	}
-	
-	// renvoie la liste des voisins
-	// @param:
+	/**
+	 * <b>estVoisin</b><br><br>
+	 * 
+	 * Retourne le nom de tous les voisins du noeud.<br>
+	 * Si ce noeud ne contient aucun voisin, on retourne null.<br>
+	 * 
+	 * @return String ou null
+	 */
 	public String estVoisin() {
 		if(this.successeurs.size() > 0) {
 			String listeVoisins = new String("Les voisins sont :\n");
@@ -96,12 +123,19 @@ public class Noeud implements Comparable<Noeud> {
 			}
 			return listeVoisins;
 		}
-		return "Aucun voisin";
+		return null;
 	}
 	
-	// renvoie l'indice de v dans voisins si v est voisin
-	// renvoie -1 si v n'est pas voisin
-	// @param: v = noeud à vérifier
+	/**
+	 * <b>estVoisin</b><br><br>
+	 * 
+	 * Vérifie si un noeud est voisin du noeud.<br>
+	 * Si le noeud donné en paramètre est voisin de ce noeud, on retourne son index dans la liste des voisins. Dans le cas contraire on retourne -1.<br>
+	 * 
+	 * @param v Noeud à vérifier comme voisin
+	 * 
+	 * @return Integer
+	 */
 	public int estVoisin(Noeud v) {
 		//a completer
 		if(this.successeurs.size() > 0) {
@@ -112,43 +146,42 @@ public class Noeud implements Comparable<Noeud> {
 		return -1;
 	}
 	
-	// renvoie le poids de l'arc correspondant si v est voisin, 0 sinon
-	// @param: v
-	public int nbArcs(Noeud v) {
-		//a completer
-		if(this.successeurs.size() > 0) {
-			if(this.successeurs.contains(v)) {
-				int a = this.successeurs.indexOf(v);
-				return this.arcs.get(a);
-			}
-		}
-		return 0;
-	}
-	
-	// si v est deja voisin, modifie la poids de l'arc correspondant
-	// sinon, ajoute v comme un nouveau voisin avec un arc de poids d
-	// (il faut incrementer nbArcs si c'est un nouveau voisin)
-	// revoie le nouveau nombre de voisins
-	// @param: v = noeud à ajouter
-	//         d = le poids
+	/**
+	 * <b>ajouteVoisin</b><br><br>
+	 * 
+	 * Ajouter un voisin du noeud.<br>
+	 * si v est deja voisin, on modifie la poids correspondant.<br>
+	 * revoie le nouveau nombre de voisins<br>
+	 * 
+	 * @param v Noeud à ajouter comme voisin
+	 * @param d Poids
+	 * 
+	 * @return Integer (Nombre de voisin)
+	 */
 	public int ajouteVoisin(Noeud v, int d) {
-		//a completer
-		if(this.successeurs.contains(v)) {
-			int i = this.successeurs.indexOf(v);
-			this.arcs.set(i, d);
+		if(this.successeurs.contains(v)) { //Si v est deja voisin
+			int i = this.successeurs.indexOf(v); //On recupère son indice
+			this.arcs.set(i, d); //On modifie son poids
 		}
 		else {
-			this.successeurs.add(v);
-			this.arcs.add(d);
-			this.nbVoisins++;
+			this.successeurs.add(v); //On ajoute le voisin
+			this.arcs.add(d); //On modifie le poids
+			this.nbVoisins++; //On met à jour le nombre de voisin
 		}
 		return this.successeurs.size();
 	}
 	
-	// si v n'est pas voisin, ne fait rien
-	// sinon enleve v de la liste de voisins
-	// renvoie le nouveau nombre de voisins
-	// @param: v = noeud à enlever
+	/**
+	 * <b>enleveVoisin</b><br><br>
+	 * 
+	 * Supprimer un voisin du noeud.<br>
+	 * si v n'est pas voisin, on ne fait rien.<br>
+	 * revoie le nouveau nombre de voisins<br>
+	 * 
+	 * @param v Noeud à enlever
+	 * 
+	 * @return Integer (Nombre de voisin)
+	 */
 	public int enleveVoisin(Noeud v) {
 		//a completer
 		if(this.successeurs.contains(v)) {
@@ -160,20 +193,41 @@ public class Noeud implements Comparable<Noeud> {
 		return this.successeurs.size();
 	}
 	
-	@Override
-	public int compareTo(Noeud o) {
-		if ( label == o.getLabel()) {
-			return 1;
-		}
-		else {
-			return 0;
-		}
+	/**
+	 * <b>compareTo</b><br><br>
+	 * 
+	 * Comparer deux noeuds.<br>
+	 * si les deux noeuds son les même, on retourne true, sinon on retourne false.<br>
+	 * 
+	 * @param o Noeud à comparer
+	 * 
+	 * @return Boolean
+	 */
+	public Boolean compareTo(Noeud o) {
+		return o.getId().equals(getId());
 	}
 	
+	/**
+	 * <b>getSuccesseurs</b><br><br>
+	 * 
+	 * Retourne la liste des successeurs du noeud.<br>
+	 * 
+	 * @return ArrayList de Noeuds
+	 */
 	public ArrayList<Noeud> getSuccesseurs(){
 		return successeurs;
 	}
 	
+	/**
+	 * <b>getPoidsUnSucesseur</b><br><br>
+	 * 
+	 * Retourne le poids d'un voisin dont on connait l'identifiant.<br>
+	 * Retourne 0 si le noeud n'est pas voisin.<br>
+	 * 
+	 * @param id Identifiant du voisin dont on veut le poids
+	 * 
+	 * @return Integer
+	 */
 	public int getPoidsUnSucesseur(String id) {
 		for(Noeud suc : successeurs) {
 			if(suc.getId().equals(id)) {
@@ -183,17 +237,13 @@ public class Noeud implements Comparable<Noeud> {
 		return 0;
 	}
 	
-	public boolean estSuccesseur(String v) {
-		if(successeurs.size() > 0) {
-			for(Noeud n : successeurs) {
-				if(n.label.get().equals(v))
-					return true;
-			}
-		}
-		
-		return false;
-	}
-	
+	/**
+	 * <b>getSuccesseursToString</b><br><br>
+	 * 
+	 * Retourne la liste des successeurs formatée.<br>
+	 * 
+	 * @return SimpleStringProperty
+	 */
 	public StringProperty getSuccesseursToString() {
 		String retour = "[ ";
 		for(int i = 0; i < successeurs.size(); i++) {
