@@ -1,23 +1,22 @@
-graph essai3 {
-	v1;
-	v2;
-	v3;
-	v4;
-	v5;
-	v6;
-	v7;
-	v8;
-	v9;
-	v10;
-	v1 -- v2 [label=2];
-	v1 -- v5 [label=2];
-	v2 -- v3 [label=1];
-	v2 -- v6 [label=4];
-	v3 -- v4 [label=3];
-	v3 -- v7 [label=3];
-	v5 -- v6 [label=1];
-	v5 -- v9 [label=2];
-	v6 -- v7 [label=5];
-	v6 -- v10 [label=1];
-	v7 -- v8 [label=3];
+graph Essai {
+	S1;
+	S2;
+	S3;
+	S4;
+	S5;
+	S6;
+	S7;
+	S8;
+	S1 -- S2;
+	S1 -- S3;
+	S1 -- S4;
+	S2 -- S3;
+	S2 -- S5;
+	S2 -- S6;
+	S4 -- S5;
+	S4 -- S7;
+	S5 -- S6;
+	S5 -- S7;
+	S6 -- S8;
+	S7 -- S8;
 }

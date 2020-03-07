@@ -15,10 +15,16 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 /**
+ * <b>Class CreerGrapheMapping</b><br><br>
+ * 
+ * Cette classe permet de créer un graphe.<br>
+ * 
  * @author Franck Anael MBIAYA
- *
+ * 
+ * @see Graphe
+ * 
+ * @version 1.0
  */
-
 public class CreerGrapheMapping {
 	private Stage stageDialogue;
 	
@@ -27,21 +33,35 @@ public class CreerGrapheMapping {
 	
 	private MainClass main;	
 	
+	/**
+	 * <b>Class setMainClass</b><br><br>
+	 * 
+	 * Cette méthode permet de recupérer le container principal de l'application et d'y mettre cette vue.<br>
+	 * 
+	 * @param m classe principale de l'application
+	 * 
+	 * @see MainClass
+	 */
 	public void setMainClass(MainClass m) {
 		main = m;
 	}
 	
-	//On initialise ici les valeurs de la liste déroulante
-	//avant de sélectionner la valeur de la personne
-	public void initialize() {
-		
-	}
-	
-	//Afin de récupérer le stage de la popup
-	//et pouvoir la clore
+	/**
+	 * <b>Class setStage</b><br><br>
+	 * 
+	 * Cette méthode permet de recuperer le Stage et le clore si c'est necessaire.<br>
+	 * 
+	 * @param s Stage
+	 */
 	public void setStage(Stage s) {stageDialogue = s;}
 	
-	//Méthode de contrôle de la validité des données saisies
+	/**
+	 * <b>Class controlerFormulaire</b><br><br>
+	 * 
+	 * Cette méthode permet de vérifier que le formulaire de création d'un graphe est correct.<br>
+	 * 
+	 * @return Boolean 
+	 */
 	private boolean controlerFormulaire() {
 		boolean isOk = true;
 		List<String> messageErreur = new ArrayList<>();
@@ -67,7 +87,11 @@ public class CreerGrapheMapping {
 		stageDialogue.close();
 	}
 	
-	//sauvegarde du noeud, que ce soit une édition ou une création
+	/**
+	 * <b>Class valider</b><br><br>
+	 * 
+	 * Cette méthode permet de sauvegarder le graphe.<br>
+	 */
 	public void valider() {
 		if(controlerFormulaire()) {
 			if(main.getSauver()) {

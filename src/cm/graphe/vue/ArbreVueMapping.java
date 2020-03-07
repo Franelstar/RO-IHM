@@ -27,16 +27,18 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
- * Cette classe permet de construire tous les <b>arbres</b> des différents graphes.
- * Mathématiquement parlant, un nombre rationnel est constitué d'un numérateur et d'un dénominateur.
+ * <b>Class ArbreVueMapping</b><br><br>
+ * 
+ * Cette classe permet de créer un arbre complet à partir de tout type de graphe et de le visualiser.<br>
+ * Cette classe implémente tous les algorithmes de création de graphe.<br>
  * 
  * @author Franck Anael MBIAYA
  * 
- * @since 1.0
+ * @see Arbre
+ * @see Graphe
  * 
- * @version 1
+ * @version 1.0
  */
-
 public class ArbreVueMapping {
 	private Stage stageDialogue;
 	Arbre arbre = new Arbre("");
@@ -64,13 +66,15 @@ public class ArbreVueMapping {
 	private MainClass main;	
 	
 	/**
-	 * Cette méthode permet de recupérer le container principal de l'application et de mettre cette .
-	 * Mathématiquement parlant, un nombre rationnel est constitué d'un numérateur et d'un dénominateur.
+	 * <b>Class setMainClass</b><br><br>
+	 * 
+	 * Cette méthode permet de recupérer le container principal de l'application et d'y mettre cette vue.<br>
+	 * Ici, on initialise également la liste de checkbox pour choisir le noeud de tête.<br>
 	 * 
 	 * @param m classe principale de l'application
 	 * @param t contient le texte qui spécifi le type d'arbre à construire
 	 * 
-	 * @return Ne retourne rien
+	 * @see MainClass
 	 */
 	public void setMainClass(MainClass m, String t) {
 		main = m;
@@ -94,10 +98,25 @@ public class ArbreVueMapping {
 		}
 	}
 	
+	/**
+	 * <b>Class getChoice</b><br><br>
+	 * 
+	 * Cette méthode modifie l'arbre en tenant compte du choix de tête de l'arbre de l'utilisateur.<br>
+	 * 
+	 * @param choice choix de l'utilisateur comme tête de l'arbre
+	 */
 	public void getChoice(ChoiceBox <String> choice) {
 		tracerGraphe(choice.getValue());
 	}
 	
+	/**
+	 * <b>Class explorerDFS</b><br><br>
+	 * 
+	 * Cette méthode construit un arbre couvrant avec l'algorithme DFS.<br>
+	 * 
+	 * @param u Noeud de tête
+	 * @param a Arbre à construire contenant déja le noeud de tête
+	 */
 	protected void explorerDFS(Noeud u, Arbre a) {
 		etat.set(main.getListDeNoeud().indexOf(u), "1");
 		
@@ -114,6 +133,13 @@ public class ArbreVueMapping {
 		etat.set(main.getListDeNoeud().indexOf(u), "2");
 	}
 	
+	/**
+	 * <b>Class tracerGraphe</b><br><br>
+	 * 
+	 * Cette méthode permet de tracer touts les types de graphes.<br>
+	 * 
+	 * @param debut contient le noeud de départ
+	 */
 	public void tracerGraphe(String debut) {
 		etat.clear();
 		grilleParent.setDisable(false);
@@ -186,13 +212,13 @@ public class ArbreVueMapping {
 	}
 	
 	/**
-	 * Cette méthode permet de tracer l'arbre couvrant de poids minimal d'un graphe connexe pondéré avec l'algorithme de prim.
+	 * <b>Class explorerPrimMin</b><br><br>
 	 * 
-	 * On parcourt les différents noeuds à partir d'un noeud de départ, tout en gardant le voisin dont l'arrete a le poids minimal
+	 * Cette méthode permet de tracer l'arbre couvrant de poids minimal d'un graphe connexe pondéré avec l'algorithme de prim.<br>
+	 * 
+	 * On parcourt les différents noeuds à partir d'un noeud de départ, tout en gardant le voisin dont l'arrete a le poids minimal.<br>
 	 * 
 	 * @param table contient l'arbre correspondant au noeud de départ
-	 * 
-	 * @return void
 	 */
 	protected String explorerPrimMin(LinkedList<Arbre> table) {
 		Map<String, Integer> liste = new HashMap<String, Integer>(); //Pour stocker les differents sommet et leur poids
@@ -289,13 +315,14 @@ public class ArbreVueMapping {
 	}
 	
 	/**
-	 * Cette méthode permet de tracer l'arbre couvrant de poids maximal d'un graphe connexe pondéré avec l'algorithme de prim.
+	 * <b>Class explorerPrimMax</b><br><br>
 	 * 
-	 * On parcourt les différents noeuds à partir d'un noeud de départ, tout en gardant le voisin dont l'arrete a le poids maximal
+	 * Cette méthode permet de tracer l'arbre couvrant de poids maximal d'un graphe connexe pondéré avec l'algorithme de prim.<br>
+	 * 
+	 * On parcourt les différents noeuds à partir d'un noeud de départ, tout en gardant le voisin dont l'arrete a le poids maximal.<br>
 	 * 
 	 * @param table contient l'arbre correspondant au noeud de départ
 	 * 
-	 * @return void
 	 */
 	protected String explorerPrimMax(LinkedList<Arbre> table) {
 		Map<String, Integer> liste = new HashMap<String, Integer>();
@@ -390,11 +417,9 @@ public class ArbreVueMapping {
 	}
 	
 	/**
-	 * Cette méthode permet de tracer l'arbre couvrant de poids minimal d'un graphe connexe pondéré avec l'algorithme de kruskal.
+	 * <b>Class explorerKruskal</b><br><br>
 	 * 
-	 * @param table contient l'arbre correspondant au noeud de départ
-	 * 
-	 * @return void
+	 * Cette méthode permet de tracer l'arbre couvrant de poids minimal d'un graphe connexe pondéré avec l'algorithme de kruskal.<br>
 	 */
 	protected void explorerKruskal() {
 		Map<String, Integer> liste = new HashMap<String, Integer>();
@@ -447,11 +472,9 @@ public class ArbreVueMapping {
 	}
 	
 	/**
-	 * Cette méthode permet de tracer l'arbre couvrant de poids minimal d'un graphe connexe pondéré avec l'algorithme de kruskal.
+	 * <b>Class explorerKruskalMax</b><br><br>
 	 * 
-	 * @param table contient l'arbre correspondant au noeud de départ
-	 * 
-	 * @return void
+	 * Cette méthode permet de tracer l'arbre couvrant de poids minimal d'un graphe connexe pondéré avec l'algorithme de kruskal.<br>
 	 */
 	protected void explorerKruskalMax() {
 		Map<String, Integer> liste = new HashMap<String, Integer>();
@@ -505,7 +528,18 @@ public class ArbreVueMapping {
 		imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
 	}
 	
-	//on va de label1 vers label2
+	/**
+	 * <b>Class kriskalCircuit</b><br><br>
+	 * 
+	 * Cette méthode permet de retourner le circuit de label1 vers label2 obtenu à partir de l'algorithme de kriskal.<br>
+	 * 
+	 * @param g Graphe contenant tous les noeuds. Aucun noeud n'a un voisin
+	 * @param label1 Le nom du noeud de départ
+	 * @param label2 le nom du noeud d'arrivé
+	 * @param prec Le noeud de qui on provient
+	 * 
+	 * @return Boolean Vrai si label2 est successeur de label1
+	 */
 	protected Boolean kriskalCircuit(Graphe g, String label1, String label2, String prec) {
 		
 		if(!g.getNoeud(label1).getSuccesseurs().isEmpty()) {
@@ -525,18 +559,21 @@ public class ArbreVueMapping {
 		return false;
 	}
 	
-	//On initialise ici les valeurs de la liste déroulante
-	//avant de sélectionner la valeur de la personne
+	/**
+	 * <b>Class initialize</b><br><br>
+	 * 
+	 * Cette méthode permet d'initialiser l'image de l'arbre.<br>
+	 */
 	public void initialize() {
 		imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
 	}
 	
-	//Afin de récupérer le stage de la popup
-	//et pouvoir la clore
+	/**
+	 * <b>Class setStage</b><br><br>
+	 * 
+	 * Cette méthode permet de recuperer le Stage et le clore si c'est necessaire.<br>
+	 * 
+	 * @param s Stage
+	 */
 	public void setStage(Stage s) {stageDialogue = s;}
-	
-	//sauvegarde du noeud, que ce soit une édition ou une création
-	public void valider() {
-		
-	}
 }

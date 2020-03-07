@@ -1,12 +1,4 @@
-/**
- * 
- */
 package cm.graphe;
-
-/**
- * @author Franck Anael MBIAYA
- *
- */
 
 import java.io.IOException;
 
@@ -31,6 +23,15 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+/**
+ * <b>Class MainClass</b><br><br>
+ * 
+ * Cette classe permet de contrôler toute l'application.<br>
+ * 
+ * @author Franck Anael MBIAYA
+ * 
+ * @version 1.0
+ */
 public class MainClass extends Application {
 
 	//Nous créons des variable de classes afin de pouvoir y accéder partout
@@ -287,38 +288,38 @@ public class MainClass extends Application {
 	}
 	
 	//Méthode qui va va afficher la popup d'édition
-		//ou de création d'une personne et initialiser son contrôleur
-		public void creerCheminCourt(String titre, String type) {
-		    try {
-		        FXMLLoader loader = new FXMLLoader();
-		        loader.setLocation(MainClass.class.getResource("vue/CourtCheminVue.fxml"));
-		        AnchorPane page = (AnchorPane) loader.load();
-		        
-		        // Création d'un nouveau Stage qui sera dépendant du Stage principal
-		        Stage stageDialogue = new Stage();
-		        stageDialogue.setTitle(titre);
-		        stageDialogue.initModality(Modality.WINDOW_MODAL);
-		        
-		        //Avec cette instruction, notre fenêtre modifiée sera modale
-		        //par rapport à notre stage principal
-		        stageDialogue.initOwner(stagePrincipal);
-		        Scene scene = new Scene(page);
-		        stageDialogue.setScene(scene);
-		        
-		        // initialisation du contrôleur
-		        CourtCheminMapping controller = loader.getController();
-		        //On passe le noeud avec laquelle nous souhaitons travailler
-		        //une existante ou une nouvelle
-		        controller.setMainClass(this, type);
-		        controller.setStage(stageDialogue);
-		        
-		        // Show the dialog and wait until the user closes it
-		        stageDialogue.showAndWait();
-		        //return controller.isOkClicked();
-		    } catch (IOException e) {
-		    	e.printStackTrace();
-		    }
-		}
+	//ou de création d'une personne et initialiser son contrôleur
+	public void creerChemin(String titre, String type) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CourtCheminVue.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle(titre);
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CourtCheminMapping controller = loader.getController();
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	        controller.setMainClass(this, type);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
 	
 	public Stage getStage() {
 		// TODO Auto-generated method stub

@@ -114,7 +114,7 @@ public class Arbre implements Comparable<Arbre> {
 	 * 
 	 * Modifier le parent.<br>
 	 * 
-	 * @param a Arbre parent
+	 * @param p Arbre parent
 	 */
 	public void ajouteParent(Arbre p) {
 		parent = p;

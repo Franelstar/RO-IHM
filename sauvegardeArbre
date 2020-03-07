@@ -1,21 +1,17 @@
-digraph v1 {
-v1
-v2
-v3
-v4
-v7
-v8
-v5
-v6
-v10
-v9
-	v1->v2
-	v2->v3
-	v3->v4
-	v3->v7
-	v7->v8
-	v1->v5
-	v5->v6
-	v6->v10
-	v5->v9
+digraph S1 {
+S1
+S2
+S5
+S6
+S8
+S3
+S4
+S7
+	S1->S2
+	S2->S5
+	S2->S6
+	S6->S8
+	S1->S3
+	S1->S4
+	S4->S7
 }

@@ -4,8 +4,8 @@ import java.io.File;
 
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
+import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
-import cm.graphe.model.TypeGraphe;
 
 /**
  * @author Franck Anael MBIAYA
@@ -23,6 +23,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 
+/**
+ * <b>Class GrapheMapping</b><br><br>
+ * 
+ * Cette classe permet de manager l'interface de visualisation d'un graphe.<br>
+ * 
+ * @author Franck Anael MBIAYA
+ * 
+ * @see Graphe
+ * 
+ * @version 1.0
+ */
 public class GrapheMapping {
 	@FXML
     private Accordion accordion;
@@ -49,17 +60,11 @@ public class GrapheMapping {
     @FXML
     private ImageView imageVue;
     
-   // @FXML
-   // private ChoiceBox<String> boxVoisin = new ChoiceBox<>(FXCollections.observableArrayList("Asparagus", "Beans", "Broccoli", "Cabbage" , "Carrot", "Celery", "Cucumber", "Leek", "Mushroom" , "Pepper", "Radish", "Shallot", "Spinach", "Swede" , "Turnip"));
-    
     //Objet servant de référence à notre classe principale
     //afin de pouvoir récupérer la liste de nos objets.
     private MainClass main;
     
     private Exporter exporter = new Exporter();
-
-    //Un constructeur par défaut
-    public GrapheMapping() { }
 
     //Méthode qui initialise notre interface graphique
     //avec nos données métier
@@ -80,8 +85,16 @@ public class GrapheMapping {
                 (observable, oldValue, newValue) -> initializeDescription(newValue));
     }
 
-    //Méthode qui sera utilisée dans l'initialisation de l'IHM
-    //dans notre classe principale
+    /**
+	 * <b>Class setMainApp</b><br><br>
+	 * 
+	 * Cette méthode permet de recupérer le container principal de l'application et d'y mettre cette vue.<br>
+	 * Cette méthode initialise le contenu de la fênetre.<br>
+	 * 
+	 * @param mainApp classe principale de l'application
+	 * 
+	 * @see MainClass
+	 */
     public void setMainApp(MainClass mainApp) {
         this.main = mainApp;
         // On lie notre liste observable au composant TableView
@@ -104,6 +117,11 @@ public class GrapheMapping {
     	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     }
     
+    /**
+	 * <b>Class setNomGraphe</b><br><br>
+	 * 
+	 * Cette méthode permet de mêttre à jour le nom du graphe<br>
+	 */
     public void setNomGraphe() {
     	String type = "";
         switch (main.getGraphe().getTypeGraphe()) {
@@ -120,7 +138,13 @@ public class GrapheMapping {
         nomValeur.setText(main.getGraphe().getNom().get() + type);
     }
     
-  //Méthode qui va mettre les valeurs de notre objet dans les composants
+    /**
+	 * <b>Class initializeDescription</b><br><br>
+	 * 
+	 * Cette méthode permet d'initialiser la description du noeud sélectionné dans le graphe<br>
+	 * 
+	 * @param n Noeud sélectionné
+	 */
     public void initializeDescription(Noeud n) {
     	//On réinitialise par défaut
     	nomNoeudValeur.setText("");

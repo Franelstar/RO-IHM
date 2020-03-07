@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
+import cm.graphe.model.Arbre;
+import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import cm.graphe.model.TypeGraphe;
 import javafx.fxml.FXML;
@@ -22,8 +24,13 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 
 /**
+ * <b>Class MenuMapping</b><br><br>
+ * 
+ * Cette classe permet de contrôler les menus de l'application.<br>
+ * 
  * @author Franck Anael MBIAYA
- *
+ * 
+ * @version 1.0
  */
 public class MenuMapping {
 	//Objet servant de référence à notre classe principale
@@ -232,6 +239,6 @@ public class MenuMapping {
     
     @FXML
     public void dijkstra() {
-    	this.main.creerCheminCourt("Création du plus court chemin (Algorithme de DIJKSTRA)", "DIJKSTRA");
+    	this.main.creerChemin("Création du plus court chemin (Algorithme de DIJKSTRA)", "DIJKSTRA");
     }
 }

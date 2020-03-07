@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cm.graphe.MainClass;
+import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -13,10 +14,17 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
+ * <b>Class CreerNoeudMapping</b><br><br>
+ * 
+ * Cette classe permet de créer un Noeud dans un graphe.<br>
+ * 
  * @author Franck Anael MBIAYA
- *
+ * 
+ * @see Graphe
+ * @see Noeud
+ * 
+ * @version 1.0
  */
-
 public class CreerNoeudMapping {
 	private Stage stageDialogue;
 	
@@ -26,19 +34,27 @@ public class CreerNoeudMapping {
 	private MainClass main;	
 	private Noeud noeud;
 	
+	/**
+	 * <b>Class setMainClass</b><br><br>
+	 * 
+	 * Cette méthode permet de recupérer le container principal de l'application et d'y mettre cette vue.<br>
+	 * 
+	 * @param m classe principale de l'application
+	 * 
+	 * @see MainClass
+	 */
 	public void setMainClass(MainClass m) {
 		main = m;
 		//stageDialogue = main.getStage();
 	}
 	
-	//On initialise ici les valeurs de la liste déroulante
-	//avant de sélectionner la valeur de la personne
-	public void initialize() {
-		
-	}
-	
-	//Afin de récupérer le stage de la popup
-	//et pouvoir la clore
+	/**
+	 * <b>Class setStage</b><br><br>
+	 * 
+	 * Cette méthode permet de recuperer le Stage et le clore si c'est necessaire.<br>
+	 * 
+	 * @param s Stage
+	 */
 	public void setStage(Stage s) {stageDialogue = s;}
 	
 	public void setNoeud(Noeud n) {
@@ -46,7 +62,13 @@ public class CreerNoeudMapping {
 		labelFormulaire.setText(n.getLabel().get());
 	}
 	
-	//Méthode de contrôle de la validité des données saisies
+	/**
+	 * <b>Class setMainClass</b><br><br>
+	 * 
+	 * Cette méthode permet de contrôler de la validité des données saisies pour créer le noeud.<br>
+	 * 
+	 * @return Boolean
+	 */
 	private boolean controlerFormulaire() {
 		boolean isOk = true;
 		List<String> messageErreur = new ArrayList<>();
@@ -78,7 +100,11 @@ public class CreerNoeudMapping {
 		stageDialogue.close();
 	}
 	
-	//sauvegarde du noeud, que ce soit une édition ou une création
+	/**
+	 * <b>Class sauvegarder</b><br><br>
+	 * 
+	 * Cette méthode permet de sauvegarder le noeud, que ce soit une édition ou une création.<br>
+	 */
 	public void sauvegarder() {
 		if(controlerFormulaire()) {
 			noeud.setLabel(new SimpleStringProperty(labelFormulaire.getText()));

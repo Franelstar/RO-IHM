@@ -1,12 +1,10 @@
-/**
- * 
- */
 package cm.graphe.vue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cm.graphe.MainClass;
+import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import cm.graphe.model.TypeGraphe;
 import javafx.fxml.FXML;
@@ -22,15 +20,20 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
+ * <b>Class CreerVoisinMapping</b><br><br>
+ * 
+ * Cette classe permet de créer un noeud voisin pour un noeud.<br>
+ * 
  * @author Franck Anael MBIAYA
- *
+ * 
+ * @see Noeud
+ * @see Graphe
+ * 
+ * @version 1.0
  */
 public class CreerVoisinMapping {
 	private Stage stageDialogue;
-	
-	//@FXML
-	//private ChoiceBox<String> boxVoisin = new ChoiceBox<>(FXCollections.observableArrayList("Asparagus", "Beans", "Broccoli", "Cabbage" , "Carrot", "Celery", "Cucumber", "Leek", "Mushroom" , "Pepper", "Radish", "Shallot", "Spinach", "Swede" , "Turnip"));
- 
+
 	@FXML
 	private VBox vbox;
 	protected ArrayList<CheckBox>  voisins = new ArrayList<CheckBox>();
@@ -39,6 +42,16 @@ public class CreerVoisinMapping {
 	private MainClass main;	
 	private Noeud noeud;
 	
+	/**
+	 * <b>Class setMainClass</b><br><br>
+	 * 
+	 * Cette méthode permet de recupérer le container principal de l'application et d'y mettre cette vue.<br>
+	 * Cette méthode initialise le contenu de la fênetre de création de voisin.<br>
+	 * 
+	 * @param m classe principale de l'application
+	 * 
+	 * @see MainClass
+	 */
 	public void setMainClass(MainClass m) {
 		main = m;
 		
@@ -70,21 +83,33 @@ public class CreerVoisinMapping {
 		vbox.getChildren().add(grille);
 	}
 	
-	//On initialise ici les valeurs de la liste déroulante
-	//avant de sélectionner la valeur de la personne
-	public void initialize() {
-		
-	}
-	
-	//Afin de récupérer le stage de la popup
-	//et pouvoir la clore
+	/**
+	 * <b>Class setStage</b><br><br>
+	 * 
+	 * Cette méthode permet de recuperer le Stage et le clore si c'est necessaire.<br>
+	 * 
+	 * @param s Stage
+	 */
 	public void setStage(Stage s) {stageDialogue = s;}
 	
+	/**
+	 * <b>Class setNoeud</b><br><br>
+	 * 
+	 * Cette méthode permet de modifier un noeud dont on veut modifier les voisins.<br>
+	 * 
+	 * @param n Noeud
+	 */
 	public void setNoeud(Noeud n) {
 		noeud = n;
 	}
 	
-	//Méthode de contrôle de la validité des données saisies
+	/**
+	 * <b>Class controlerFormulaire</b><br><br>
+	 * 
+	 * Méthode de contrôle de la validité des données saisies.<br>
+	 * 
+	 * @param n Noeud
+	 */
 	private boolean controlerFormulaire() {
 		if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O) {
 			boolean isOk = true;	
@@ -104,7 +129,11 @@ public class CreerVoisinMapping {
 		}
 	}
 	
-	//sauvegarde du noeud, que ce soit une édition ou une création
+	/**
+	 * <b>Class valider</b><br><br>
+	 * 
+	 * Cette méthode permet de sauvegarder le graphe.<br>
+	 */
 	public void valider() {
 		if(controlerFormulaire()) {
 			for(CheckBox che : voisins) {
