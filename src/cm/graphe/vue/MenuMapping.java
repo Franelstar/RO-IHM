@@ -54,6 +54,8 @@ public class MenuMapping {
     MenuItem kruskalMenu;
     @FXML
     MenuItem dijkstraMenu;
+    @FXML
+    MenuItem nouvelleTache;
     
     
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
@@ -67,6 +69,7 @@ public class MenuMapping {
     	primMenu.setDisable(true);
     	kruskalMenu.setDisable(true);
     	dijkstraMenu.setDisable(true);
+    	nouvelleTache.setDisable(true);
     }
     
     public void activeMenus() {
@@ -75,23 +78,27 @@ public class MenuMapping {
     	dijkstraMenu.setDisable(false);
     	
     	if(main.getTypeGraphe() != null) {
-    	switch (main.getTypeGraphe()) {
-			case PONDERE_N_O:
-				bfsMenu.setDisable(true);
-		        dfsMenu.setDisable(true);
-		        primMenu.setDisable(false);
-		    	kruskalMenu.setDisable(false);
-				break;
-			case SIMPLE_N_O:
-				bfsMenu.setDisable(false);
-		        dfsMenu.setDisable(false);
-		        primMenu.setDisable(true);
-		    	kruskalMenu.setDisable(true);
-				break;
-			default:
-				break;
-		}
+	    	switch (main.getTypeGraphe()) {
+				case PONDERE_N_O:
+					bfsMenu.setDisable(true);
+			        dfsMenu.setDisable(true);
+			        primMenu.setDisable(false);
+			    	kruskalMenu.setDisable(false);
+					break;
+				case SIMPLE_N_O:
+					bfsMenu.setDisable(false);
+			        dfsMenu.setDisable(false);
+			        primMenu.setDisable(true);
+			    	kruskalMenu.setDisable(true);
+					break;
+				default:
+					break;
+			}
+	    }
     }
+    
+    public void activeMenusOrdonnancement() {
+    	nouvelleTache.setDisable(false);
     }
     
 	//Fermer l'application
@@ -240,5 +247,17 @@ public class MenuMapping {
     @FXML
     public void dijkstra() {
     	this.main.creerChemin("Création du plus court chemin (Algorithme de DIJKSTRA)", "DIJKSTRA");
+    }
+    
+    @FXML
+    public void creerTache() {
+    	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
+    	this.main.creerOrdonnancement("Création d'un nouveau ordonnancement");
+    	main.setSauver(false);
+    }
+    
+    @FXML
+    public void menuNouvelleTache() {
+    	this.main.creerTache();
     }
 }

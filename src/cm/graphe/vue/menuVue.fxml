@@ -15,6 +15,7 @@
                     <items>
                     <MenuItem mnemonicParsing="false" onAction="#creerGraphe" text="Graphe non orienté non pondéré" />
                       <MenuItem mnemonicParsing="false" onAction="#creerGraphePondere" text="Graphe non orienté pondéré" />
+                        <MenuItem mnemonicParsing="false" onAction="#creerTache" text="Ordonnancement" />
                     </items>
                   </Menu>
                   <MenuItem mnemonicParsing="false" onAction="#openFileLocation" text="Ouvrir" />
@@ -49,6 +50,11 @@
               <items>
                 <MenuItem fx:id="dijkstraMenu" mnemonicParsing="false" onAction="#dijkstra" text="Dijkstra" />
               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Ordonnancement">
+               <items>
+                  <MenuItem fx:id="nouvelleTache" mnemonicParsing="false" onAction="#menuNouvelleTache" text="Nouvelle tache" />
+               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Aide">
             <items>

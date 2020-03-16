@@ -9,9 +9,11 @@ import cm.graphe.vue.ArbreVueMapping;
 import cm.graphe.vue.CourtCheminMapping;
 import cm.graphe.vue.CreerGrapheMapping;
 import cm.graphe.vue.CreerNoeudMapping;
+import cm.graphe.vue.CreerTacheMapping;
 import cm.graphe.vue.CreerVoisinMapping;
 import cm.graphe.vue.GrapheMapping;
 import cm.graphe.vue.MenuMapping;
+import cm.graphe.vue.OrdonnancementMapping;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -145,7 +147,7 @@ public class MainClass extends Application {
 	}
 	
 	//Méthode qui va va afficher la popup d'édition
-	//ou de création d'une personne et initialiser son contrôleur
+	//ou de création d'un noeud et initialiser son contrôleur
 	public void afficheCreerNoeud(Noeud neoud, String titre) {
 	    try {
 	        FXMLLoader loader = new FXMLLoader();
@@ -316,6 +318,66 @@ public class MainClass extends Application {
 	        // Show the dialog and wait until the user closes it
 	        stageDialogue.showAndWait();
 	        //return controller.isOkClicked();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'un graphe et initialiser son contrôleur
+	public void creerOrdonnancement(String titre) {
+	    FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(MainClass.class.getResource("vue/OrdonnancementVue.fxml"));
+		try {
+			//Nous récupérons notre conteneur qui contiendra les données
+			//Pour rappel, c'est un AnchorPane...
+			AnchorPane conteneurGraphes = (AnchorPane) loader.load();
+			//Qui nous ajoutons à notre conteneur principal
+			//Au centre, puisque'il s'agit d'un BorderPane
+			conteneurPrincipal.setCenter(conteneurGraphes);
+			
+			controleur.activeMenusOrdonnancement();
+			
+			//Nous récupérons notre mappeur via l'objet FXMLLoader
+			OrdonnancementMapping controleurMapping = loader.getController();
+			//Nous lui passons notre instance de classe
+			//pour qu'il puisse récupérer notre liste observable
+			controleurMapping.setMainApp(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'un graphe et initialiser son contrôleur
+	public void creerTache() {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CreerTache.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle("Création nouvelle tâche");
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CreerTacheMapping controller = loader.getController();
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	        controller.setMainClass(this);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
+	        
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
