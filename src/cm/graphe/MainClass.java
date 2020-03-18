@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.Tache;
 import cm.graphe.model.TypeGraphe;
 import cm.graphe.vue.ArbreVueMapping;
 import cm.graphe.vue.CourtCheminMapping;
 import cm.graphe.vue.CreerGrapheMapping;
 import cm.graphe.vue.CreerNoeudMapping;
+import cm.graphe.vue.CreerPredecesseurMapping;
 import cm.graphe.vue.CreerTacheMapping;
 import cm.graphe.vue.CreerVoisinMapping;
 import cm.graphe.vue.GrapheMapping;
@@ -46,6 +48,7 @@ public class MainClass extends Application {
 	private Graphe g;
 	private MenuMapping controleur;
 	private GrapheMapping controleurMapping = null;
+	private OrdonnancementMapping ordonnancementMapping = null;
 	private TypeGraphe typeGraphe = null;
 	
 	
@@ -58,6 +61,10 @@ public class MainClass extends Application {
 	public void setGraphe(Graphe gra) {
 		g = gra;
 		initialisationContenu();
+	}
+	
+	public void setGrapheOrdonnancement(Graphe gra) {
+		g = gra;
 	}
 	
 	public void setSauver(boolean s) {
@@ -339,10 +346,10 @@ public class MainClass extends Application {
 			controleur.activeMenusOrdonnancement();
 			
 			//Nous récupérons notre mappeur via l'objet FXMLLoader
-			OrdonnancementMapping controleurMapping = loader.getController();
+			ordonnancementMapping = loader.getController();
 			//Nous lui passons notre instance de classe
 			//pour qu'il puisse récupérer notre liste observable
-			controleurMapping.setMainApp(this);
+			ordonnancementMapping.setMainApp(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -372,12 +379,85 @@ public class MainClass extends Application {
 	        //On passe le noeud avec laquelle nous souhaitons travailler
 	        //une existante ou une nouvelle
 	        controller.setMainClass(this);
+	        controller.setMappingTache(ordonnancementMapping);
 	        controller.setStage(stageDialogue);
 	        
 	        // Show the dialog and wait until the user closes it
 	        stageDialogue.showAndWait();
 	        //return controller.isOkClicked();
 	        
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'un noeud et initialiser son contrôleur
+	public void afficheModifierTache(Tache tache, String titre) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CreerTache.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle(titre);
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CreerTacheMapping controller = loader.getController();
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	        controller.setTache(tache);
+	        controller.setMainClass(this);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	//Méthode qui va va afficher la popup d'édition
+	//ou de création d'une personne et initialiser son contrôleur
+	public void afficheCreerPredecesseurs(Tache tache, ObservableList<Tache> taches, String titre) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainClass.class.getResource("vue/CreerPredecesseurVue.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        
+	        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+	        Stage stageDialogue = new Stage();
+	        stageDialogue.setTitle(titre);
+	        stageDialogue.initModality(Modality.WINDOW_MODAL);
+	        
+	        //Avec cette instruction, notre fenêtre modifiée sera modale
+	        //par rapport à notre stage principal
+	        stageDialogue.initOwner(stagePrincipal);
+	        Scene scene = new Scene(page);
+	        stageDialogue.setScene(scene);
+	        
+	        // initialisation du contrôleur
+	        CreerPredecesseurMapping controller = loader.getController();
+	        controller.setTaches(tache, taches);
+	        //On passe le noeud avec laquelle nous souhaitons travailler
+	        //une existante ou une nouvelle
+	       // controller.setNoeud(neoud);
+	        
+	        controller.setMainClass(this);
+	        controller.setStage(stageDialogue);
+	        
+	        // Show the dialog and wait until the user closes it
+	        stageDialogue.showAndWait();
+	        //return controller.isOkClicked();
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }

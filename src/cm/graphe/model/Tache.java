@@ -3,6 +3,8 @@ package cm.graphe.model;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -17,10 +19,16 @@ import javafx.beans.property.StringProperty;
  */
 public class Tache {
 	protected String id = new Timestamp(System.currentTimeMillis()).toString(); //Identifiant de la tache
-	protected int duree;
+	protected IntegerProperty duree = new SimpleIntegerProperty();
 	protected StringProperty label = new SimpleStringProperty(); //Nom de la tache (est unique pour une tache)
 	protected StringProperty libelle = new SimpleStringProperty(); //Libelle de la tache
 	protected ArrayList<Tache>  predecesseurs = new ArrayList<Tache>(); //Liste des taches prédécesseurs
+	
+	public static int instanceCount = 0;
+	
+	{ // Constructeur implicite
+		  instanceCount++;
+	}
 	
 	/**
 	 * Création d'une tache.<br>
@@ -30,7 +38,7 @@ public class Tache {
 	public Tache(String label, String libelle, int duree) {
 		this.label.set(label);
 		this.libelle.set(libelle);
-		this.duree = duree;
+		this.duree.setValue(duree);
 	}
 	
 	/**
@@ -52,8 +60,8 @@ public class Tache {
 	 * 
 	 * @return String
 	 */
-	public String getLabel() {
-		return label.get();
+	public StringProperty getLabel() {
+		return label;
 	}
 	
 	/**
@@ -74,8 +82,8 @@ public class Tache {
 	 * 
 	 * @return String
 	 */
-	public String getLibelle() {
-		return libelle.get();
+	public StringProperty getLibelle() {
+		return libelle;
 	}
 	
 	/**
@@ -96,7 +104,7 @@ public class Tache {
 	 * 
 	 * @return Integer
 	 */
-	public Integer getDuree() {
+	public IntegerProperty getDuree() {
 		return duree;
 	}
 	
@@ -108,7 +116,7 @@ public class Tache {
 	 * @param duree
 	 */
 	public void setDuree(int duree) {
-		this.duree = duree;
+		this.duree.setValue(duree);
 	}
 	
 	/**
@@ -120,6 +128,22 @@ public class Tache {
 	 */
 	public ArrayList<Tache> getPredecesseurs() {
 		return this.predecesseurs;
+	}
+	
+	/**
+	 * <b>estPredecesseur</b><br><br>
+	 * 
+	 * Retourne la liste de predeceddeurs.<br>
+	 * 
+	 * @param t tache à vérifier
+	 * 
+	 * @return Bolean
+	 */
+	public Boolean estPredecesseur(Tache t) {
+		if(this.predecesseurs.contains(t))
+			return true;
+		
+		return false;
 	}
 	
 	/**
@@ -142,7 +166,25 @@ public class Tache {
 	 * @param tache Tache utilisé comme prédécesseur
 	 */
 	public void enleverPredecesseur(Tache tache) {
-		if(!this.predecesseurs.contains(tache))
+		if(this.predecesseurs.contains(tache))
 			this.predecesseurs.remove(tache);
+	}
+	
+	/**
+	 * <b>getPredecesseursToString</b><br><br>
+	 * 
+	 * Retourne la liste des prédécesseurs formatée.<br>
+	 * 
+	 * @return SimpleStringProperty
+	 */
+	public StringProperty getPredecesseursToString() {
+		String retour = "[ ";
+		for(int i = 0; i < predecesseurs.size(); i++) {
+			retour += predecesseurs.get(i).getLabel().get();
+			if(i+1 < predecesseurs.size())
+				retour += " | ";
+		}
+		retour += " ]";
+		return new SimpleStringProperty(retour);
 	}
 }

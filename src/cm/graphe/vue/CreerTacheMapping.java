@@ -6,8 +6,11 @@ import java.util.List;
 import cm.graphe.MainClass;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.Tache;
 import cm.graphe.model.TypeGraphe;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -20,9 +23,15 @@ private Stage stageDialogue;
 	
 	@FXML
 	private TextField labelFormulaire;
+	@FXML
+	private TextField libelleFormulaire;
+	@FXML
+	private TextField dureeFormulaire;
 	
 	private MainClass main;	
-	private Noeud noeud;
+	private Tache tache;
+	private ObservableList<Tache> taches = FXCollections.observableArrayList();
+	OrdonnancementMapping oTaches;
 	
 	/**
 	 * <b>Class setMainClass</b><br><br>
@@ -35,7 +44,6 @@ private Stage stageDialogue;
 	 */
 	public void setMainClass(MainClass m) {
 		main = m;
-		//stageDialogue = main.getStage();
 	}
 	
 	/**
@@ -47,9 +55,20 @@ private Stage stageDialogue;
 	 */
 	public void setStage(Stage s) {stageDialogue = s;}
 	
-	public void setNoeud(Noeud n) {
-		noeud = n;
-		labelFormulaire.setText(n.getLabel().get());
+	public void setTache(Tache t) {
+		tache = t;
+		labelFormulaire.setEditable(false);
+		labelFormulaire.setText(t.getLabel().get());
+		libelleFormulaire.setText(t.getLibelle().get());
+		dureeFormulaire.setText(String.valueOf(t.getDuree().get()));
+	}
+	public void setMappingTache(OrdonnancementMapping oT) {
+		oTaches = oT;
+		taches = oTaches.getTache();
+		
+		labelFormulaire.setEditable(false);
+		int index = Tache.instanceCount+1;
+		labelFormulaire.setText("T" + index);
 	}
 	
 	/**
@@ -65,13 +84,21 @@ private Stage stageDialogue;
 		if (labelFormulaire.getText() == null || labelFormulaire.getText().isEmpty()) {
 			isOk = false;
 			messageErreur.add("Le champ \"Label\" est obligatoire");
+		} else if (libelleFormulaire.getText() == null || libelleFormulaire.getText().isEmpty()) {
+			isOk = false;
+			messageErreur.add("Le champ \"Libelle\" est obligatoire");
+		} else if (dureeFormulaire.getText() == null || dureeFormulaire.getText().isEmpty()) {
+			isOk = false;
+			messageErreur.add("Le champ \"Durée\" est obligatoire");
 		}
-		else {
-			if(main.getGraphe().contentNoeud(labelFormulaire.getText())) {
-				isOk = false;
-				messageErreur.add("Le label " + labelFormulaire.getText() + " existe déjà");
-			}
-		}
+		
+		try {
+	        float myFloat = Float.parseFloat(dureeFormulaire.getText());
+	        
+	      } catch (NumberFormatException ex) {
+	    	  isOk = false;
+			messageErreur.add("Le champ \"Durée\" est un nombre entier");
+	      }
 		
 		if(!isOk) {
 			Alert erreur = new Alert(AlertType.ERROR);
@@ -97,14 +124,18 @@ private Stage stageDialogue;
 	 */
 	public void sauvegarder() {
 		if(controlerFormulaire()) {
-			noeud.setLabel(new SimpleStringProperty(labelFormulaire.getText()));
 
 			//S'il s'agit d'une création, on ajoute la personne dans le tableau
 			if(stageDialogue.getTitle().startsWith("Création")) {
-				main.getGraphe().creerNoeud(noeud);
+				//main.getGraphe().creerNoeud(noeud);
+				Tache t = new Tache(labelFormulaire.getText(), libelleFormulaire.getText(), Integer.parseInt(dureeFormulaire.getText()));
+				taches.add(t);
+				oTaches.getTache();
 			}
 			else {
-				main.getGraphe().getListeNoeud().set(main.getGraphe().getNoeudId(noeud.getId()), noeud);
+				tache.setLabel(labelFormulaire.getText());
+				tache.setLibelle(libelleFormulaire.getText());
+				tache.setDuree(Integer.parseInt(dureeFormulaire.getText()));
 			}
 
 			//On ferme la boîte de dialogue

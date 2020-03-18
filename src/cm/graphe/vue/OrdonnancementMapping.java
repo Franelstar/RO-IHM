@@ -4,7 +4,12 @@ import java.io.File;
 
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
+import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.Tache;
+import cm.graphe.model.TypeGraphe;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -20,15 +25,19 @@ public class OrdonnancementMapping {
 	@FXML
     private Accordion accordion;
 	@FXML
-    private TableView<Noeud> graphe;
+    private TableView<Tache> tache;
     @FXML
-    private TableColumn<Noeud, String> listeGraphe;
+    private TableColumn<Tache, String> listeLabel;
     @FXML
-    private TableColumn<Noeud, String> listenbre;
+    private TableColumn<Tache, String> listeLibelle;
     @FXML
-    private Label nomNoeudValeur;
+    private TableColumn<Tache, String> listeDuree;
     @FXML
-    private Label listeVoisin;
+    private TableColumn<Tache, String> listePredecesseurs;
+    @FXML
+    private Label nomTacheValeur;
+    @FXML
+    private Label listePredecesseur;
     @FXML
     private Label labelListeVoisin;
     @FXML
@@ -45,22 +54,40 @@ public class OrdonnancementMapping {
     private MainClass main;
     
     private Exporter exporter = new Exporter();
+    
+    private ObservableList<Tache> taches = FXCollections.observableArrayList(); //Liste des noeuds
+    
+    public ObservableList<Tache> getTache() {
+    	return taches;
+    }
 
     //Méthode qui initialise notre interface graphique
     //avec nos données métier
     @FXML
     private void initialize() {
+    	
+    	taches.add(new Tache("T1", "Première tache", 3));
+    	taches.add(new Tache("T2", "Deuxième tache", 7));
+    	taches.add(new Tache("T3", "Troisième tache", 4));
+    	taches.add(new Tache("T4", "Quatrième tache", 6));
+    	taches.add(new Tache("T5", "Cinquième tache", 5));
+    	taches.add(new Tache("T6", "Sixième tache", 3));
+    	taches.add(new Tache("T7", "Septième tache", 2));
+    	
         // Initialize the graphe list.
-    	nomNoeudValeur.setText("");
-    	listeVoisin.setText("");
+    	nomTacheValeur.setText("");
+    	listePredecesseur.setText("");
     	labelListeVoisin.setVisible(false);
     	modifierNoeud.setVisible(false);
     	voisinNoeud.setVisible(false);
     	supprimerNoeud.setVisible(false);
-    	listeGraphe.setCellValueFactory(cellData -> cellData.getValue().getLabel());
-    	listenbre.setCellValueFactory(cellData -> cellData.getValue().getSuccesseursToString());
+    	listeLabel.setCellValueFactory(cellData -> cellData.getValue().getLabel());
+    	listeLibelle.setCellValueFactory(cellData -> cellData.getValue().getLibelle());
+    	listeDuree.setCellValueFactory(cellData -> cellData.getValue().getDuree().asString());
+    	listePredecesseurs.setCellValueFactory(cellData -> cellData.getValue().getPredecesseursToString());
     	
-    	graphe.getSelectionModel().selectedItemProperty().addListener(
+    	tache.setItems(taches);
+    	tache.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> initializeDescription(newValue));
     }
 
@@ -76,7 +103,7 @@ public class OrdonnancementMapping {
 	 */
     public void setMainApp(MainClass mainApp) {
         this.main = mainApp;
-        
+        main.setTypeGraphe(TypeGraphe.PONDERE_O);
     }
     
     /**
@@ -84,27 +111,26 @@ public class OrdonnancementMapping {
 	 * 
 	 * Cette méthode permet d'initialiser la description du noeud sélectionné dans le graphe<br>
 	 * 
-	 * @param n Noeud sélectionné
+	 * @param newValue Noeud sélectionné
 	 */
-    public void initializeDescription(Noeud n) {
+    public void initializeDescription(Tache newValue) {
+    	
     	//On réinitialise par défaut
-    	nomNoeudValeur.setText("");
-    	listeVoisin.setText("");
+    	nomTacheValeur.setText("");
+    	listePredecesseur.setText("");
     	labelListeVoisin.setVisible(false);
     	modifierNoeud.setVisible(false);
     	voisinNoeud.setVisible(false);
     	supprimerNoeud.setVisible(false);
     	
-    	//image
-    	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
-    	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+    	setGraphe();
     	
     	//Si un objet est passé en paramètre, on modifie l'IHM
-    	if(n != null) {
+    	if(newValue != null) {
     		//ATTENTION : les accesseurs retournent des objets Property Java FX
     		//Pour récupérer leurs vrais valeurs vous devez utiliser la méthode get()
-    		nomNoeudValeur.setText(n.getLabel().get());
-    		listeVoisin.setText(n.getSuccesseursToString().get());
+    		nomTacheValeur.setText(newValue.getLabel().get());
+    		listePredecesseur.setText(newValue.getPredecesseursToString().get());
     		labelListeVoisin.setVisible(true);
     		modifierNoeud.setVisible(true);
     		voisinNoeud.setVisible(true);
@@ -113,33 +139,36 @@ public class OrdonnancementMapping {
     }
     
     @FXML
-	public void modifierNoeud() {
-    	int index = graphe.getSelectionModel().getSelectedIndex();
+	public void modifierTache() {
+    	int index = tache.getSelectionModel().getSelectedIndex();
     	//Si aucune ligne n'est sélectionnée, index vaudra -1
     	if (index > -1) {
-    		main.afficheCreerNoeud(main.getGraphe().getNoeudIndex(index), "Modifier le Noeud");
-    		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+    		main.afficheModifierTache(taches.get(index), "Modifification d'une tâche");
+    		setGraphe();
     	}
 	}
     
     @FXML
-   	public void creerVoisin() {
-       	int index = graphe.getSelectionModel().getSelectedIndex();
+   	public void creerPredecesseur() {
+       	int index = tache.getSelectionModel().getSelectedIndex();
        	//Si aucune ligne n'est sélectionnée, index vaudra -1
        	if (index > -1) {
-       		main.afficheCreerVoisin(main.getGraphe().getNoeudIndex(index), "Créer Voisins");
-       		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+       		main.afficheCreerPredecesseurs(taches.get(index), taches, "Créer Voisins");
+       		setGraphe();
        	}
    	}
     
     @FXML
-    public void supprimerNoeud() {
-    	int index = graphe.getSelectionModel().getSelectedIndex();
+    public void supprimerTache() {
+    	int index = tache.getSelectionModel().getSelectedIndex();
     	//Si aucune ligne n'est sélectionnée, index vaudra -1
     	if (index > -1) {
-    		main.getGraphe().deleteNoeud(index);
-    		main.setSauver(false);
-    		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+    		for(Tache t : taches) {
+    			if(!t.getLabel().get().equals(taches.get(index).getLabel().get()))
+    				t.enleverPredecesseur(taches.get(index));
+    		}
+    		taches.remove(index);
+    		setGraphe();
     	}
     	else {
     		Alert probleme = new Alert(AlertType.ERROR);
@@ -147,6 +176,18 @@ public class OrdonnancementMapping {
     		probleme.setHeaderText("Veuillez sélectionnez un noeud");
     		probleme.showAndWait();
     	}
+    }
+    
+    public void setGraphe() {
+    	Graphe graphe = new Graphe("Ordonnancement", TypeGraphe.PONDERE_O);
+    	for(Tache tache : taches) {
+    		Noeud neud = new Noeud(tache.getLabel().get());
+    		graphe.creerNoeud(neud);
+    	}
+    	main.setGrapheOrdonnancement(graphe);
+    	
+    	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
+    	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     }
 
 }
