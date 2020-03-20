@@ -1,17 +1,15 @@
-digraph S1 {
-S1
-S2
-S5
-S6
-S8
-S3
-S4
-S7
-	S1->S2
-	S2->S5
-	S2->S6
-	S6->S8
-	S1->S3
-	S1->S4
-	S4->S7
+digraph Courtchemin {
+	A;
+	B;
+	D;
+	C;
+	G;
+	H;
+	F;
+	A -> B [label=2];
+	B -> D [label=-1];
+	D -> C [label=2];
+	C -> G [label=1];
+	G -> H [label=2];
+	H -> F [label=-3];
 }

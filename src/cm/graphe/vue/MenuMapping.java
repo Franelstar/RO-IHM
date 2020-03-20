@@ -56,6 +56,10 @@ public class MenuMapping {
     MenuItem dijkstraMenu;
     @FXML
     MenuItem nouvelleTache;
+    @FXML
+    MenuItem bellmanMenu;
+    @FXML
+    MenuItem ordonnancer;
     
     
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
@@ -70,12 +74,13 @@ public class MenuMapping {
     	kruskalMenu.setDisable(true);
     	dijkstraMenu.setDisable(true);
     	nouvelleTache.setDisable(true);
+    	bellmanMenu.setDisable(true);
+    	ordonnancer.setDisable(true);
     }
     
     public void activeMenus() {
     	sauverG.setDisable(false);
     	nouvMenu.setDisable(false);
-    	dijkstraMenu.setDisable(false);
     	
     	if(main.getTypeGraphe() != null) {
 	    	switch (main.getTypeGraphe()) {
@@ -84,13 +89,17 @@ public class MenuMapping {
 			        dfsMenu.setDisable(true);
 			        primMenu.setDisable(false);
 			    	kruskalMenu.setDisable(false);
+			    	dijkstraMenu.setDisable(false);
 					break;
 				case SIMPLE_N_O:
 					bfsMenu.setDisable(false);
 			        dfsMenu.setDisable(false);
 			        primMenu.setDisable(true);
 			    	kruskalMenu.setDisable(true);
+			    	dijkstraMenu.setDisable(false);
 					break;
+				case PONDERE_O:
+					bellmanMenu.setDisable(false);
 				default:
 					break;
 			}
@@ -99,6 +108,7 @@ public class MenuMapping {
     
     public void activeMenusOrdonnancement() {
     	nouvelleTache.setDisable(false);
+    	ordonnancer.setDisable(false);
     }
     
 	//Fermer l'application
@@ -154,6 +164,20 @@ public class MenuMapping {
     public void creerGraphePondere() {
     	this.main.setTypeGraphe(TypeGraphe.PONDERE_N_O);
     	this.main.creerGraphe("Création d'un nouveau graphe non orienté pondéré");
+    	main.setSauver(false);
+    }
+    
+    @FXML
+    public void creerGraphePondereO() {
+    	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
+    	this.main.creerGraphe("Création d'un nouveau graphe orienté pondéré");
+    	main.setSauver(false);
+    }
+    
+    @FXML
+    public void creerGrapheNPondereO() {
+    	this.main.setTypeGraphe(TypeGraphe.SIMPLE_0);
+    	this.main.creerGraphe("Création d'un nouveau graphe orienté non pondéré");
     	main.setSauver(false);
     }
     
@@ -250,6 +274,11 @@ public class MenuMapping {
     }
     
     @FXML
+    public void bellman() {
+    	this.main.creerChemin("Création du plus court chemin (Algorithme de Bellman-Ford)", "BELLMAN-FORD");
+    }
+    
+    @FXML
     public void creerTache() {
     	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
     	this.main.creerOrdonnancement("Création d'un nouveau ordonnancement");
@@ -259,5 +288,10 @@ public class MenuMapping {
     @FXML
     public void menuNouvelleTache() {
     	this.main.creerTache();
+    }
+    
+    @FXML
+    public void menuOrdonnancer() {
+    	this.main.ordonnancer();
     }
 }

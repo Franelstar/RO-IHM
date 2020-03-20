@@ -63,7 +63,9 @@ public class CreerVoisinMapping {
 				if(noeud.estVoisin(noeu) != -1)
 					check.setSelected(true);
 				voisins.add(check);
-				poids.add(new TextField(String.valueOf(noeud.getPoidsUnSucesseur(noeu.getId()))));
+				TextField tex = new TextField(String.valueOf(noeud.getPoidsUnSucesseur(noeu.getId())));
+				tex.setText("1");
+				poids.add(tex);
 			}
 		}
 		
@@ -71,7 +73,7 @@ public class CreerVoisinMapping {
 		for(CheckBox che : voisins) {
 			HBox hbox = new HBox();
 			hbox.getChildren().add(che);
-			if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O) {
+			if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O || main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_O) {
 				hbox.getChildren().add(new Label("       Poids     "));
 				hbox.getChildren().add(poids.get(voisins.indexOf(che)));
 			}
@@ -111,12 +113,12 @@ public class CreerVoisinMapping {
 	 * @param n Noeud
 	 */
 	private boolean controlerFormulaire() {
-		if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O) {
+		if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O || main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_O) {
 			boolean isOk = true;	
 			
 			for(TextField p : poids) {
 				if(voisins.get(poids.indexOf(p)).isSelected()) {
-					if(p.getText().isEmpty() || Integer.parseInt(p.getText().trim()) <= 0) {
+					if(p.getText().isEmpty() || Integer.parseInt(p.getText().trim()) == 0) {
 						isOk = false;
 					}
 				}
@@ -140,11 +142,14 @@ public class CreerVoisinMapping {
 				Noeud neud = main.getGraphe().getNoeud(che.getText());
 				if(che.isSelected()) {
 					noeud.ajouteVoisin(neud, Integer.parseInt(poids.get(voisins.indexOf(che)).getText()));
-					neud.ajouteVoisin(noeud, Integer.parseInt(poids.get(voisins.indexOf(che)).getText()));
+					if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O || main.getGraphe().getTypeGraphe() == TypeGraphe.SIMPLE_N_O)
+						neud.ajouteVoisin(noeud, Integer.parseInt(poids.get(voisins.indexOf(che)).getText()));
 				}
 				else {
-					noeud.enleveVoisin(neud);
-					neud.enleveVoisin(noeud);
+					if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_N_O || main.getGraphe().getTypeGraphe() == TypeGraphe.SIMPLE_N_O) {
+						noeud.enleveVoisin(neud);
+						neud.enleveVoisin(noeud);
+					}	
 				}
 				main.getGraphe().getListeNoeud().set(main.getGraphe().getNoeudId(noeud.getId()), noeud);
 				main.getGraphe().getListeNoeud().set(main.getGraphe().getNoeudId(neud.getId()), neud);
@@ -158,7 +163,7 @@ public class CreerVoisinMapping {
 			erreur.setTitle("Attention ! ");
 			StringBuilder sb = new StringBuilder();
 			List<String> messageErreur = new ArrayList<>();
-			messageErreur.add("Vous avez un poids inférieur à 1");
+			messageErreur.add("Vous avez un poids égal à 0");
 			messageErreur.stream().forEach((x) -> sb.append("\n" + x));
 			erreur.setHeaderText(sb.toString());
 			erreur.showAndWait();

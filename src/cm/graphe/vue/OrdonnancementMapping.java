@@ -1,6 +1,9 @@
 package cm.graphe.vue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
@@ -73,6 +76,16 @@ public class OrdonnancementMapping {
     	taches.add(new Tache("T5", "Cinquième tache", 5));
     	taches.add(new Tache("T6", "Sixième tache", 3));
     	taches.add(new Tache("T7", "Septième tache", 2));
+    	
+    	
+    	taches.get(2).ajouterPredecesseur(taches.get(0));
+    	taches.get(3).ajouterPredecesseur(taches.get(0));
+    	taches.get(3).ajouterPredecesseur(taches.get(1));
+    	taches.get(4).ajouterPredecesseur(taches.get(2));
+    	taches.get(5).ajouterPredecesseur(taches.get(2));
+    	taches.get(5).ajouterPredecesseur(taches.get(3));
+    	taches.get(6).ajouterPredecesseur(taches.get(5));
+    	
     	
         // Initialize the graphe list.
     	nomTacheValeur.setText("");
@@ -180,14 +193,111 @@ public class OrdonnancementMapping {
     
     public void setGraphe() {
     	Graphe graphe = new Graphe("Ordonnancement", TypeGraphe.PONDERE_O);
+    	Noeud source = new Noeud("S");
+    	graphe.creerNoeud(source);
+    	Noeud puit = new Noeud("P");
+    	graphe.creerNoeud(puit);
+    	ArrayList<Noeud> neuds = new ArrayList<Noeud>();
+    	
     	for(Tache tache : taches) {
     		Noeud neud = new Noeud(tache.getLabel().get());
+    		neuds.add(neud);
     		graphe.creerNoeud(neud);
     	}
+    	
+    	int i = 0;
+    	for(Tache tache : taches) {
+    		if(tache.getPredecesseurs().isEmpty()) {
+    			source.ajouteVoisin(neuds.get(i), 0);
+    		} else {
+    			for(Tache tacheP : tache.getPredecesseurs()) {
+    				for(Noeud neu : neuds) {
+    					if(neu.getLabel().get().equals(tacheP.getLabel().get())) {
+    						neu.ajouteVoisin(neuds.get(i), tacheP.getDuree().get());
+    					}
+    				}
+    			}
+    		}
+    		i++;
+    	}
+    	
+    	for(Noeud neu : neuds) {
+    		if(neu.getNbVoisins() == 0) {
+    			for(Tache tache : taches) {
+    				if(tache.getLabel().get().equals(neu.getLabel().get())) {
+    					neu.ajouteVoisin(puit, tache.getDuree().get());
+    				}
+    			}
+    		}
+    	}
+    	
     	main.setGrapheOrdonnancement(graphe);
     	
-    	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
+    	exporter.exporterFichierOriente(main.getGraphe(), "sauvegarde");
     	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     }
 
+    public List<HashMap<Noeud, Double>>  ordonnancer(){
+    	if(!taches.isEmpty()) {
+    		//On recherche un circuit positif
+    		Boolean circuit = false;
+    		setGraphe();
+    		
+    		if(!circuit) {
+    			HashMap<Noeud, Double> MaxTot = new HashMap<Noeud, Double>();
+    			HashMap<Noeud, Double> MaxTard = new HashMap<Noeud, Double>();
+    			for(Noeud neud : main.getGraphe().getListeNoeud()) {
+    				if(!neud.getLabel().get().equals("S")) {
+    					MaxTot.put(neud, 0.0);
+    				}
+    				MaxTard.put(neud, 0.0);
+    			}
+    			
+    			for(Noeud neu : main.getGraphe().getListeNoeud()) {
+    				if(!neu.getLabel().get().equals("S")) {
+    					RechercheMaxTot(MaxTot, main.getGraphe().getNoeud("S"), neu, 0.0);
+    				}
+    				RechercheMaxTard(MaxTard, neu, main.getGraphe().getNoeud("P"), 0.0, neu);
+    			}
+    			
+    			HashMap<Noeud, Double> Debut = new HashMap<Noeud, Double>();
+    			for(Noeud neud : main.getGraphe().getListeNoeud()) {
+    				Debut.put(neud, MaxTard.get(main.getGraphe().getNoeud("S")) - MaxTard.get(neud));
+    			}
+    			
+    			List<HashMap<Noeud, Double>> listOfMaps = new ArrayList<HashMap<Noeud, Double>>();
+    			listOfMaps.add(Debut);
+    			listOfMaps.add(MaxTot);
+    			return listOfMaps;
+    		}
+    	}
+    	return null;
+    }
+    
+    protected void RechercheMaxTot(HashMap<Noeud, Double> tMax, Noeud debut, Noeud fin, Double max) {
+    	for(Noeud neud : debut.getSuccesseurs()) {
+    		max += debut.getPoidsUnSucesseur(neud.getId());
+    		if(neud.getLabel().get().equals(fin.getLabel().get())) {
+    			if(tMax.get(neud) < max) {
+    				tMax.put(neud, max);
+    			}
+    		} else if(!neud.getSuccesseurs().isEmpty()) {
+    			RechercheMaxTot(tMax, neud, fin, max);
+    		}
+    	}
+    }
+    
+    protected void RechercheMaxTard(HashMap<Noeud, Double> tMax, Noeud debut, Noeud fin, Double max, Noeud VDebut) {
+    	for(Noeud neud : debut.getSuccesseurs()) {
+    		max += debut.getPoidsUnSucesseur(neud.getId());
+    		if(neud.getLabel().get().equals(fin.getLabel().get())) {
+    			if(tMax.get(VDebut) < max) {
+    				tMax.put(VDebut, max);
+    			}
+    		} else if(!neud.getSuccesseurs().isEmpty()) {
+    			RechercheMaxTard(tMax, neud, fin, max, VDebut);
+    			max -= debut.getPoidsUnSucesseur(neud.getId());
+    		}
+    	}
+    }
 }

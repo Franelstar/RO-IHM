@@ -52,6 +52,12 @@ public class Exporter {
 	    				case "1":
 	    					g.setTypeGraphe(TypeGraphe.PONDERE_N_O);
 	    					break;
+	    				case "2":
+	    					g.setTypeGraphe(TypeGraphe.PONDERE_O);
+	    					break;
+	    				case "3":
+	    					g.setTypeGraphe(TypeGraphe.SIMPLE_0);
+	    					break;
 	    			default:
 	    				g.setTypeGraphe(TypeGraphe.SIMPLE_N_O);
 	    				break;
@@ -76,7 +82,8 @@ public class Exporter {
             		String part2 = parts[1];
             		int part3 = Integer.parseInt(parts[2]);
             		g.getListeNoeud().get(g.getNoeudLabelToIndex(part1.trim())).ajouteVoisin(g.getNoeud(part2.trim()), part3);
-            		g.getListeNoeud().get(g.getNoeudLabelToIndex(part2.trim())).ajouteVoisin(g.getNoeud(part1.trim()), part3);
+            		if(g.getTypeGraphe() == TypeGraphe.PONDERE_N_O || g.getTypeGraphe() == TypeGraphe.SIMPLE_N_O)
+            			g.getListeNoeud().get(g.getNoeudLabelToIndex(part2.trim())).ajouteVoisin(g.getNoeud(part1.trim()), part3);
             	}
             	controle++;
             }
@@ -106,6 +113,12 @@ public class Exporter {
 					break;
 				case PONDERE_N_O:
 					buf.write("1" + "\n");
+					break;
+				case PONDERE_O:
+					buf.write("2" + "\n");
+					break;
+				case SIMPLE_0:
+					buf.write("3" + "\n");
 					break;
 			default:
 				buf.write("0" + "\n");
@@ -138,6 +151,10 @@ public class Exporter {
 	
 	public void exporterFichier(Graphe graphe, String nom) {
 		toPNG(graphe, nom);
+	}
+	
+	public void exporterFichierOriente(Graphe graphe, String nom) {
+		toPNGOriente(graphe, nom);
 	}
 	
 	public void exporterArbre(Arbre graphe, String nom) {
@@ -245,6 +262,59 @@ public class Exporter {
 		}
 	}
 	
+	
+	// dessiner un png avec dot
+		public void toPNGOriente ( Graphe graphe, String fichier ) {
+			try {
+				File sortie = createFile(fichier);
+				BufferedWriter buf = new BufferedWriter( 
+						new OutputStreamWriter(
+								new FileOutputStream( sortie ), Charset.forName("UTF-8").newEncoder()
+								)
+						);
+				
+				String line;
+				String verifier = "";
+				
+				buf.write("digraph " + graphe.getNom().get() + " {\n");
+				
+				for ( Noeud v : graphe.getListeNoeud() ) {
+					line = "\t" + v.getLabel().get() + ";\n";
+					buf.write(line);
+					verifier += line;
+				}
+				for ( Noeud v : graphe.getListeNoeud() ) {
+					if ( v.getNbVoisins() > 0 ) {
+						for ( Noeud u : v.getSuccesseurs() ) {
+							line = "\t" + v.getLabel().get() + " -> " + u.getLabel().get();
+							if(graphe.getTypeGraphe() == TypeGraphe.PONDERE_O) {
+								line += " [label="+v.getPoidsUnSucesseur(u.getId())+"];\n";
+							} else {
+								line += ";\n";
+							}
+							buf.write(line);
+							verifier += line;
+						}
+					}
+				}
+				
+				buf.write("}");
+				
+				buf.close();
+	 
+				String commande = "neato -Tpng " + fichier + " -o " + fichier + ".png";
+				Process process = Runtime.getRuntime().exec(commande);
+				process.waitFor();
+				//commande = "eog " + fichier + ".png &";
+				//process = Runtime.getRuntime().exec(commande);
+				//process.waitFor();
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 	// dessiner un png avec dot
 	public void arbreToPNG ( Arbre arbre, String fichier ) {
 		try {

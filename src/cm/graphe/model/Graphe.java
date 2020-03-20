@@ -1,5 +1,7 @@
 package cm.graphe.model;
 
+import java.io.IOException;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -123,10 +125,15 @@ public class Graphe{
 	 * @param neu Noeud à créer
 	 */
 	public void creerNoeud(Noeud neu) {
-		if(!contentNoeud(neu.getLabel().get())) {
-			noeuds.add(neu);
-			nbNoeuds = noeuds.size();
-		}
+		try {
+			Thread.sleep(0,5 * 1000);
+			if(!contentNoeud(neu.getLabel().get())) {
+				noeuds.add(neu);
+				nbNoeuds = noeuds.size();
+			}
+		} catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 	}
 	
 	/**

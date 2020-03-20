@@ -6,6 +6,7 @@ import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
+import cm.graphe.model.TypeGraphe;
 
 /**
  * @author Franck Anael MBIAYA
@@ -99,22 +100,16 @@ public class GrapheMapping {
         this.main = mainApp;
         // On lie notre liste observable au composant TableView
         graphe.setItems(main.getGraphe().getListeNoeud());
-        String type = "";
-        switch (main.getGraphe().getTypeGraphe()) {
-	        case SIMPLE_N_O:
-				type = " (Graphe non orienté non pondéré)";
-				break;
-			case PONDERE_N_O:
-				type = " (Graphe non orienté pondéré)";
-				break;
-		default:
-			type = " (Graphe non orienté non pondéré)";
-			break;
-		}
-        nomValeur.setText(main.getGraphe().getNom().get() + type);
-      //image
-    	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
-    	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+        setNomGraphe();
+
+        //image
+        if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_O || main.getGraphe().getTypeGraphe() == TypeGraphe.SIMPLE_0) {
+        	exporter.exporterFichierOriente(main.getGraphe(), "sauvegarde");
+        	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+        } else {
+        	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
+        	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+        }
     }
     
     /**
@@ -130,6 +125,12 @@ public class GrapheMapping {
 				break;
 			case PONDERE_N_O:
 				type = " (Graphe non orienté pondéré)";
+				break;
+			case PONDERE_O:
+				type = " (Graphe orienté pondéré)";
+				break;
+			case SIMPLE_0:
+				type = " (Graphe orienté non pondéré)";
 				break;
 		default:
 			type = " (Graphe non orienté non pondéré)";
@@ -155,8 +156,13 @@ public class GrapheMapping {
     	supprimerNoeud.setVisible(false);
     	
     	//image
-    	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
-    	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+    	if(main.getGraphe().getTypeGraphe() == TypeGraphe.PONDERE_O || main.getGraphe().getTypeGraphe() == TypeGraphe.SIMPLE_0) {
+        	exporter.exporterFichierOriente(main.getGraphe(), "sauvegarde");
+        	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+        } else {
+        	exporter.exporterFichier(main.getGraphe(), "sauvegarde");
+        	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
+        }
     	
     	//Si un objet est passé en paramètre, on modifie l'IHM
     	if(n != null) {

@@ -1,6 +1,8 @@
 package cm.graphe;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
@@ -13,6 +15,7 @@ import cm.graphe.vue.CreerNoeudMapping;
 import cm.graphe.vue.CreerPredecesseurMapping;
 import cm.graphe.vue.CreerTacheMapping;
 import cm.graphe.vue.CreerVoisinMapping;
+import cm.graphe.vue.DiagrammeOrdonnancementMapping;
 import cm.graphe.vue.GrapheMapping;
 import cm.graphe.vue.MenuMapping;
 import cm.graphe.vue.OrdonnancementMapping;
@@ -354,6 +357,27 @@ public class MainClass extends Application {
 			e.printStackTrace();
 		}
 	}
+	
+	//Méthode qui va va afficher la popup d'édition
+		//ou de création d'un graphe et initialiser son contrôleur
+		public void ordonnancer() {
+		    if(ordonnancementMapping != null) {
+		    	List<HashMap<Noeud, Double>> liste = ordonnancementMapping.ordonnancer();
+		        
+		        // Création d'un nouveau Stage qui sera dépendant du Stage principal
+		        Stage stageDialogue = new Stage();
+		        
+		        //Avec cette instruction, notre fenêtre modifiée sera modale
+		        //par rapport à notre stage principal
+		        stageDialogue.initOwner(stagePrincipal);
+		        
+		        // initialisation du contrôleur
+		        DiagrammeOrdonnancementMapping controller = new DiagrammeOrdonnancementMapping();
+		        controller.setListe(liste);
+		        controller.setTaches(ordonnancementMapping.getTache());
+		        controller.start(stageDialogue);
+		    }
+		}
 	
 	//Méthode qui va va afficher la popup d'édition
 	//ou de création d'un graphe et initialiser son contrôleur

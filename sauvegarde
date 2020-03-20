@@ -1,2 +1,22 @@
-graph Ordonnancement {
+digraph Ordonnancement {
+	S;
+	P;
+	T1;
+	T2;
+	T3;
+	T4;
+	T5;
+	T6;
+	T7;
+	S -> T1 [label=0];
+	S -> T2 [label=0];
+	T1 -> T3 [label=3];
+	T1 -> T4 [label=3];
+	T2 -> T4 [label=7];
+	T3 -> T5 [label=4];
+	T3 -> T6 [label=4];
+	T4 -> T6 [label=6];
+	T5 -> P [label=5];
+	T6 -> T7 [label=3];
+	T7 -> P [label=2];
 }

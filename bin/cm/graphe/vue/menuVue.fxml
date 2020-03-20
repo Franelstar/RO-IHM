@@ -13,8 +13,10 @@
             <items>
                   <Menu mnemonicParsing="false" text="Nouveau">
                     <items>
-                    <MenuItem mnemonicParsing="false" onAction="#creerGraphe" text="Graphe non orienté non pondéré" />
+                        <MenuItem mnemonicParsing="false" onAction="#creerGraphePondereO" text="Graphe orienté pondéré" />
+                        <MenuItem mnemonicParsing="false" onAction="#creerGrapheNPondereO" text="Graphe orienté non pondéré" />
                       <MenuItem mnemonicParsing="false" onAction="#creerGraphePondere" text="Graphe non orienté pondéré" />
+                    <MenuItem mnemonicParsing="false" onAction="#creerGraphe" text="Graphe non orienté non pondéré" />
                         <MenuItem mnemonicParsing="false" onAction="#creerTache" text="Ordonnancement" />
                     </items>
                   </Menu>
@@ -49,11 +51,13 @@
             <Menu mnemonicParsing="false" text="Court chemin">
               <items>
                 <MenuItem fx:id="dijkstraMenu" mnemonicParsing="false" onAction="#dijkstra" text="Dijkstra" />
+                  <MenuItem fx:id="bellmanMenu" mnemonicParsing="false" onAction="#bellman" text="Bellman-Ford" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Ordonnancement">
                <items>
                   <MenuItem fx:id="nouvelleTache" mnemonicParsing="false" onAction="#menuNouvelleTache" text="Nouvelle tache" />
+                  <MenuItem fx:id="ordonnancer" mnemonicParsing="false" onAction="#menuOrdonnancer" text="Ordonnancer" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Aide">

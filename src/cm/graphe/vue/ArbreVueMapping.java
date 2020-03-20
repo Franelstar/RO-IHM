@@ -506,8 +506,8 @@ public class ArbreVueMapping {
 		for(Noeud neud : main.getGraphe().getListeNoeud()) {
 			g.creerNoeud(new Noeud(neud.getLabel().get()));
 		}
-		System.out.println(liste.toString());
-		System.out.println(sortedMap.toString());
+		//System.out.println(liste.toString());
+		//System.out.println(sortedMap.toString());
 		// Maintenant on parcour les arretes dans l'ordre en supprimant ceux qui ne servent plus
 		for (String key : sortedMap.keySet()) {
 			//On vérifie si les deux noeud de cette arrete ne sont pas encore utilisé
