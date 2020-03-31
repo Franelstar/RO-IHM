@@ -60,6 +60,8 @@ public class MenuMapping {
     MenuItem bellmanMenu;
     @FXML
     MenuItem ordonnancer;
+    @FXML
+    MenuItem fordMenu;
     
     
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
@@ -76,6 +78,7 @@ public class MenuMapping {
     	nouvelleTache.setDisable(true);
     	bellmanMenu.setDisable(true);
     	ordonnancer.setDisable(true);
+    	fordMenu.setDisable(true);
     }
     
     public void activeMenus() {
@@ -100,6 +103,8 @@ public class MenuMapping {
 					break;
 				case PONDERE_O:
 					bellmanMenu.setDisable(false);
+					fordMenu.setDisable(false);
+					dijkstraMenu.setDisable(false);
 				default:
 					break;
 			}
@@ -283,6 +288,11 @@ public class MenuMapping {
     	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
     	this.main.creerOrdonnancement("Création d'un nouveau ordonnancement");
     	main.setSauver(false);
+    }
+    
+    @FXML
+    public void fordFulkerson() {
+    	this.main.creerChemin("Création de flot à valeur maximale (Algorithme de Ford - Fulkerson)", "FORDFULKERSON");
     }
     
     @FXML

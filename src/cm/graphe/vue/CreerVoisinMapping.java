@@ -64,7 +64,8 @@ public class CreerVoisinMapping {
 					check.setSelected(true);
 				voisins.add(check);
 				TextField tex = new TextField(String.valueOf(noeud.getPoidsUnSucesseur(noeu.getId())));
-				tex.setText("1");
+				if(noeud.estVoisin(noeu) == -1)
+					tex.setText("1");
 				poids.add(tex);
 			}
 		}

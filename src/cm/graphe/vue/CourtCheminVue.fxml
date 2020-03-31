@@ -87,17 +87,30 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="56.0" prefWidth="598.0">
                <children>
-                  <GridPane fx:id="poidsCumule" layoutX="145.0" layoutY="7.0" prefHeight="26.0" prefWidth="307.0">
+                  <GridPane fx:id="poidsCumule" layoutX="28.0" layoutY="15.0" prefHeight="26.0" prefWidth="185.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="133.0" minWidth="10.0" prefWidth="125.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.0" minWidth="10.0" prefWidth="181.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="209.0" minWidth="10.0" prefWidth="198.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.0" minWidth="10.0" prefWidth="110.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="valeurPoidsCumule" text="0" GridPane.columnIndex="1" />
+                        <Label fx:id="valeurPoidsCumule" GridPane.columnIndex="1" />
                         <Label text="Longueur totale :" />
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="poidsCumule1" layoutX="363.0" layoutY="15.0" prefHeight="26.0" prefWidth="185.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="209.0" minWidth="10.0" prefWidth="198.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.0" minWidth="10.0" prefWidth="110.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="valeurFlot" GridPane.columnIndex="1" />
+                        <Label text="Flot maximal" />
                      </children>
                   </GridPane>
                </children></AnchorPane>

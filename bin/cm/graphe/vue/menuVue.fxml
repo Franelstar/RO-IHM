@@ -60,6 +60,11 @@
                   <MenuItem fx:id="ordonnancer" mnemonicParsing="false" onAction="#menuOrdonnancer" text="Ordonnancer" />
                </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Flot">
+               <items>
+                  <MenuItem fx:id="fordMenu" mnemonicParsing="false" onAction="#fordFulkerson" text="Ford-Fulkerson" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Aide">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#apropos" text="A propos" />

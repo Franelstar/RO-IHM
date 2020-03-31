@@ -14,6 +14,7 @@ import java.util.Queue;
 
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
+import cm.graphe.model.Arbre;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import cm.graphe.model.TypeGraphe;
@@ -61,6 +62,9 @@ public class CourtCheminMapping {
     private Label valeurPoidsCumule;
 	
 	@FXML
+    private Label valeurFlot;
+	
+	@FXML
 	private GridPane grilleParent;
 	
 	private Exporter exporter = new Exporter();
@@ -86,7 +90,7 @@ public class CourtCheminMapping {
 		}
 		
 		boxDepart.setOnAction(e -> getChoice(boxDepart, boxArrivee));
-		boxArrivee.setOnAction(e -> getChoice(boxDepart, boxArrivee));//tracerChemin("A", "F");
+		boxArrivee.setOnAction(e -> getChoice(boxDepart, boxArrivee));
 	}
 	
 	/**
@@ -110,6 +114,8 @@ public class CourtCheminMapping {
 	 * @param fin nom du neoud d'arrivée
 	 */
 	protected void tracerChemin(String debut, String fin) {
+		valeurFlot.setText("");
+		valeurPoidsCumule.setText("");
 		if(typeArbre.equals("DIJKSTRA")) {
 			if(!debut.equals(fin))
 				dijkstra(debut, fin);
@@ -130,10 +136,116 @@ public class CourtCheminMapping {
 				exporter.exporterFichier(courtChemin, "sauvegardeArbre");
 				imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
 			}
+		} else if(typeArbre.equals("FORDFULKERSON")) {
+			if(!debut.equals(fin)) {
+				fordFulkerson(debut, fin);
+			}
 		}
 		
 	}
 	
+	private void fordFulkerson(String debut, String fin) {
+		// TODO Auto-generated method stub
+		if(debut != null && fin != null) {
+			//On duplique le graphe en cour
+			Graphe grapheOld = new Graphe("", TypeGraphe.PONDERE_O);
+			for(Noeud neud : main.getGraphe().getListeNoeud()) {
+				Noeud n = new Noeud(neud.getLabel().get());
+				grapheOld.creerNoeud(n);
+			}
+			for(Noeud neud : main.getGraphe().getListeNoeud()) {
+				for(Noeud neu : neud.getSuccesseurs()) {
+					grapheOld.getNoeud(neud.getLabel().get()).ajouteVoisin(grapheOld.getNoeud(neu.getLabel().get()), neud.getPoidsUnSucesseur(neu.getId()));
+				}
+			}
+			
+			HashMap<Noeud, String> etat = new HashMap<Noeud, String>();
+			for(Noeud neu : main.getGraphe().getListeNoeud()) {
+				etat.put(neu, "0");
+			}
+			Graphe grapheResiduel = new Graphe("", TypeGraphe.PONDERE_O);
+			
+			while(RechercheCheminDFS(grapheResiduel, null, main.getGraphe().getNoeud(debut), main.getGraphe().getNoeud(fin), etat, false)) {
+				
+				//On recupere le plus petit poid
+				int valeurAuglentee = (int) Float.POSITIVE_INFINITY;
+				for(Noeud neud : grapheResiduel.getListeNoeud()) {
+					if(!neud.getSuccesseurs().isEmpty()) {
+						if(valeurAuglentee > neud.getPoidsUnSucesseur(neud.getSuccesseurs().get(0).getId())) {
+							valeurAuglentee = neud.getPoidsUnSucesseur(neud.getSuccesseurs().get(0).getId());
+						}
+					}
+				}
+				
+				for(Noeud neud : grapheResiduel.getListeNoeud()) {
+					if(!neud.getSuccesseurs().isEmpty()) {
+						String nDepart = neud.getLabel().get();
+						String nArrivee = neud.getSuccesseurs().get(0).getLabel().get();
+						
+						Noeud nD = main.getGraphe().getNoeud(nDepart);
+						Noeud nA = main.getGraphe().getNoeud(nArrivee);
+						
+						nD.ajouteVoisin(nA, nD.getPoidsUnSucesseur(nA.getId()) - valeurAuglentee);
+						if(nA.estVoisin(nD) != -1) {
+							nA.ajouteVoisin(nD, nA.getPoidsUnSucesseur(nD.getId()) + valeurAuglentee);
+						} else {
+							nA.ajouteVoisin(nD, valeurAuglentee);
+						}
+						if(nD.getPoidsUnSucesseur(nA.getId()) == 0) {
+							nD.enleveVoisin(nA);
+						}
+					}
+				}
+				
+				for(Noeud neu : main.getGraphe().getListeNoeud()) {
+					etat.put(neu, "0");
+				}
+				grapheResiduel = new Graphe("", TypeGraphe.PONDERE_O);
+			}
+			
+			int flot = 0;
+			
+			for(Noeud neud : main.getGraphe().getNoeud(fin).getSuccesseurs()) {
+				flot += main.getGraphe().getNoeud(fin).getPoidsUnSucesseur(neud.getId());
+			}
+			
+			valeurFlot.setText(String.valueOf(flot));
+			exporter.exporterFichierOriente(main.getGraphe(), "sauvegardeArbre");
+			imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
+			main.setGraphe(grapheOld);
+		}
+	}
+	
+	protected Boolean RechercheCheminDFS(Graphe g, Noeud prec, Noeud debut, Noeud fin, HashMap<Noeud, String> etat, Boolean trouve) {
+		etat.put(debut, "1");
+		Noeud aDebut = new Noeud(debut.getLabel().get());
+		if(prec != null)
+			prec.ajouteVoisin(aDebut, main.getGraphe().getNoeud(prec.getLabel().get()).getPoidsUnSucesseur(debut.getId()));
+		g.creerNoeud(aDebut);
+		if(aDebut.getLabel().get().equals(fin.getLabel().get())) {
+			trouve = true;
+		} else {
+			if(!debut.getSuccesseurs().isEmpty()) {
+				for(Noeud v : debut.getSuccesseurs()) {
+					if(etat.get(v) == "0" && !trouve) {
+						trouve = RechercheCheminDFS(g, aDebut, v, fin, etat, trouve);
+					}
+				}
+				if(!trouve) {
+					if(prec != null)
+						prec.enleveVoisin(aDebut);
+					g.deleteNoeud(g.getNoeudId(aDebut.getId()));
+				}
+			} else {
+				if(prec != null)
+					prec.enleveVoisin(aDebut);
+				g.deleteNoeud(g.getNoeudId(aDebut.getId()));
+			}
+		}
+		
+		return trouve;
+    }
+
 	/**
 	 * <b>Class dijkstra</b><br><br>
 	 * 
@@ -142,81 +254,55 @@ public class CourtCheminMapping {
 	 * @param debut nom du neoud de départ
 	 * @param fin nom du neoud d'arrivée
 	 */
-	protected void dijkstra(String debut, String fin) {
+	protected Graphe dijkstra(String debut, String fin) {
 		if(debut != null && fin != null) {
 			//On crée un tableau de dimension nbre de noeud
 			//Une valeur est à true si on a fini avec son traitement
 			HashMap<Noeud, Boolean> etat = new HashMap<Noeud, Boolean>();
 			
 			// Liste de noeuds qvec la dernière valeur de parent et de poids
-			HashMap<Noeud,HashMap<Noeud, Integer>> liste = new HashMap<Noeud,HashMap<Noeud, Integer>>();
-			
-			// Liste d'attente des noeuds à traiter
-			Queue<Noeud> fifo = new LinkedList<Noeud>();
-			
-			// Vérifier si un noeud est deja entré dans fifo
-			HashMap<Noeud, Boolean> etatFifo = new HashMap<Noeud, Boolean>();
+			HashMap<Noeud, Double> listeDistance = new HashMap<Noeud, Double>();
+			HashMap<Noeud, Noeud> listeParent = new HashMap<Noeud, Noeud>();
+			Noeud noeudTraite = null;
 						
 			for(Noeud neud : main.getGraphe().getListeNoeud()) {
-				HashMap<Noeud, Integer> a = new HashMap<Noeud, Integer>();
 				if(neud.getLabel().get().equals(debut)) {
-					a.put(null, 0);
-					liste.put(neud, a);
 					etat.put(neud, true);
-					fifo.add(neud);
-					etatFifo.put(neud, true);
+					listeDistance.put(neud, 0.0);
+					listeParent.put(neud, null);
+					noeudTraite = neud;
 				} else {
-					a.put(null, (int) Float.POSITIVE_INFINITY);
-					liste.put(neud, a);
 					etat.put(neud, false);
-					etatFifo.put(neud, false);
+					listeDistance.put(neud, Double.POSITIVE_INFINITY);
+					listeParent.put(neud, null);
 				}
 			}
-
-			//On commence le traitement proprement dit
-			//On fait attention avec les index des tableaux parce que c'est eux qui controle la cohérence entre les différent objet manipulé, sauf fifo
 			
-			while(!fifo.isEmpty()) {
-				//0. On retire le dernier noeud de fifo
-				Noeud dernier = fifo.remove();
-				etat.remove(dernier);
-				etat.put(dernier, true);
-				
-				//1. On cherche les voisins du dernier élément de fifo et on ajoute dans fifo s'il cela n'a pas encore été fait
-				for(Noeud neud : dernier.getSuccesseurs()) {
-					if(!etatFifo.get(neud)) {
-						fifo.add(neud);
-						etatFifo.put(neud, true);
+			for(int i = 0; i < main.getGraphe().getListeNoeud().size(); i++) {
+				if(noeudTraite != null) {
+					for(Noeud neud : noeudTraite.getSuccesseurs()) {
+						if(!etat.get(neud)) {
+							Double d = Double.valueOf(noeudTraite.getPoidsUnSucesseur(neud.getId()));
+							Double d_old = Double.valueOf(listeDistance.get(neud));
+							Double d_noeudTraite = Double.valueOf(listeDistance.get(noeudTraite));
+							if(d_old > d + d_noeudTraite) {
+								listeDistance.put(neud, d + d_noeudTraite);
+								listeParent.put(neud, noeudTraite);
+							}
+						}
 					}
-				}
-				
-				//2. On recalcule le poids de chaque noeud dans fifo et si c'est plus petit que celui qui est la, on met à jour
-				
-				for(Noeud neud : fifo) {
-					if(dernier.estVoisin(neud) != -1) {
-						int oldPoids = 0;
-						
-						int newPoids = dernier.getPoidsUnSucesseur(neud.getId());
-						
-						HashMap<Noeud, Integer> map = liste.get(dernier);
-						Iterator<Map.Entry<Noeud,Integer>> iter = map.entrySet().iterator();
-						while (iter.hasNext()) {
-							Map.Entry<Noeud,Integer> entry = iter.next();
-							newPoids += entry.getValue();
-						}
-						
-						map = liste.get(neud);
-						iter = map.entrySet().iterator();
-						while (iter.hasNext()) {
-							Map.Entry<Noeud,Integer> entry = iter.next();
-							oldPoids = entry.getValue();
-						}
-						
-						if(newPoids < oldPoids) {
-							HashMap<Noeud, Integer> a = new HashMap<Noeud, Integer>();
-							a.put(dernier, newPoids);
-							liste.get(neud).clear();
-							liste.put(neud, a);
+					
+					etat.put(noeudTraite, true);
+					
+					noeudTraite = null;
+					Double min = Double.POSITIVE_INFINITY;
+					
+					for(Noeud neud : main.getGraphe().getListeNoeud()) {
+						if(!etat.get(neud)) {
+							if(min > Double.valueOf(listeDistance.get(neud))) {
+								noeudTraite = neud;
+								min = Double.valueOf(listeDistance.get(neud));
+							}
 						}
 					}
 				}
@@ -224,17 +310,18 @@ public class CourtCheminMapping {
 			
 			//3. On parcourt pour chercher le chemin le plus court qu'on met dans un graphe
 			// On verifie que tous les noeuds debut et fin on été parcouru. Si c'est pas le cas, le graphe n'est pas continu
-			if(etat.get(main.getGraphe().getNoeud(debut)) && etat.get(main.getGraphe().getNoeud(fin)) && !liste.get(main.getGraphe().getNoeud(fin)).containsKey(null)) {
+			if(etat.get(main.getGraphe().getNoeud(debut)) && etat.get(main.getGraphe().getNoeud(fin))) {
 				Graphe courtChemin = new Graphe("Courtchemin", TypeGraphe.PONDERE_O);
-				valeurPoidsCumule.setText(String.valueOf(creerChemin(courtChemin, main.getGraphe().getNoeud(fin), liste, 0)));
+				valeurPoidsCumule.setText(String.valueOf(creerChemin(courtChemin, main.getGraphe().getNoeud(debut), main.getGraphe().getNoeud(fin), listeDistance, listeParent, 0)));
 				exporter.exporterFichierOriente(courtChemin, "sauvegardeArbre");
 				imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
+				return courtChemin;
 			}
-			
 		}
+		return null;
 	}
 	
-	public Boolean bellmanFord(String debut, String fin) {
+	public Graphe bellmanFord(String debut, String fin) {
 		if(debut != null && fin != null) {
 			// Liste de noeuds qvec la dernière valeur de parent et de poids
 			HashMap<Noeud, Double> liste = new HashMap<Noeud, Double>();
@@ -285,13 +372,13 @@ public class CourtCheminMapping {
 				erreur.showAndWait();
 			} else {
 				Graphe courtChemin = new Graphe("Courtchemin", TypeGraphe.PONDERE_O);
-				valeurPoidsCumule.setText(String.valueOf(creerCheminBellman(courtChemin, main.getGraphe().getNoeud(debut), main.getGraphe().getNoeud(fin), liste, parent, 0)));
+				valeurPoidsCumule.setText(String.valueOf(creerChemin(courtChemin, main.getGraphe().getNoeud(debut), main.getGraphe().getNoeud(fin), liste, parent, 0)));
 				exporter.exporterFichierOriente(courtChemin, "sauvegardeArbre");
 				imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
-				return true;
+				return courtChemin;
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	/**
@@ -306,41 +393,10 @@ public class CourtCheminMapping {
 	 * 
 	 * @return Integer Le poids cumulé
 	 */
-	protected int creerChemin(Graphe g, Noeud n, HashMap<Noeud,HashMap<Noeud, Integer>> liste, int p) {
-		HashMap<Noeud, Integer> map = liste.get(n);
-		Iterator<Map.Entry<Noeud,Integer>> iter = map.entrySet().iterator();
-		while (iter.hasNext()) {
-			Map.Entry<Noeud,Integer> entry = iter.next();
-			if(entry.getKey() != null) {
-				p += entry.getValue();
-				creerChemin(g, entry.getKey(), liste, p);
-				Noeud neu = new Noeud(n.getLabel().get());
-				g.getListeNoeud().get(g.getListeNoeud().size() -1).ajouteVoisin(neu, main.getGraphe().getNoeud(g.getListeNoeud().get(g.getListeNoeud().size() -1).getLabel().get()).getPoidsUnSucesseur(main.getGraphe().getNoeud(n.getLabel().get()).getId()));
-				g.creerNoeud(neu);
-			} else {
-				Noeud neu = new Noeud(n.getLabel().get());
-				g.creerNoeud(neu);
-			}
-		}
-		return p;
-	}
-	
-	/**
-	 * <b>Class creerChemin</b><br><br>
-	 * 
-	 * Cette méthode permet de recupérer le plus court chemin implémenté par l'algorithme de dijskra.<br>
-	 * 
-	 * @param g Graphe qui va contenir tous les noeuds du cheminle plus court
-	 * @param n Noeud d'arrivé
-	 * @param liste Liste de sortie de l'algorithme de dijskra
-	 * @param p Poids cumulé
-	 * 
-	 * @return Integer Le poids cumulé
-	 */
-	protected int creerCheminBellman(Graphe g, Noeud debut, Noeud fin, HashMap<Noeud, Double> liste, HashMap<Noeud, Noeud> parent, int p) {
+	protected int creerChemin(Graphe g, Noeud debut, Noeud fin, HashMap<Noeud, Double> liste, HashMap<Noeud, Noeud> parent, int p) {
 		if(!debut.getLabel().get().equals(fin.getLabel().get())) {
 			Noeud prec = parent.get(fin);
-			creerCheminBellman(g, debut, prec, liste, parent, p);
+			creerChemin(g, debut, prec, liste, parent, p);
 			
 			Noeud neu = new Noeud(fin.getLabel().get());
 			
