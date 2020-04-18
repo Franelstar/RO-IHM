@@ -26,6 +26,16 @@
     <h3>Tracer le chemin le plus court entre deux noeuds d'un graphe pondéré</h3>
     <ul>
       <li>Algorithme de DIJKSTRA</li>
+      <li>Algorithme de Bellman-Ford</li>
+    </ul>
+  </li>
+  <li>
+    <h3>Ordonnancement</h3>
+  </li>
+  <li>
+    <h3>Affectation de tâches</h3>
+    <ul>
+      <li>Algorithme de Ford-Fulkerson</li>
     </ul>
   </li>
  </ol>
