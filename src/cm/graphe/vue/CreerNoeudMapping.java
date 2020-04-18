@@ -118,7 +118,6 @@ public class CreerNoeudMapping {
 			}
 
 			//On ferme la boîte de dialogue
-			main.setSauver(false);
 			stageDialogue.close();
 		}
 	}

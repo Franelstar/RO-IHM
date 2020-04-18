@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import cm.graphe.MainClass;
 import cm.graphe.controler.Exporter;
 import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
-import cm.graphe.model.Tache;
 import cm.graphe.model.TypeGraphe;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -24,19 +25,21 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class OrdonnancementMapping {
+public class FlotMapping {
 	@FXML
     private Accordion accordion;
 	@FXML
-    private TableView<Tache> tache;
+    private TableView<Noeud> personnes;
+	@FXML
+    private TableView<Noeud> taches;
     @FXML
-    private TableColumn<Tache, String> listeLabel;
+    private TableColumn<Noeud, String> personneLabel;
     @FXML
-    private TableColumn<Tache, String> listeLibelle;
+    private TableColumn<Noeud, String> tacheLabel;
     @FXML
-    private TableColumn<Tache, String> listeDuree;
+    private TableColumn<Noeud, String> ipersonneLabel;;
     @FXML
-    private TableColumn<Tache, String> listePredecesseurs;
+    private TableColumn<Noeud, String> itacheLabel;
     @FXML
     private Label nomTacheValeur;
     @FXML
@@ -44,64 +47,48 @@ public class OrdonnancementMapping {
     @FXML
     private Label labelListeVoisin;
     @FXML
-    private Button modifierNoeud;
-    @FXML
     private Button voisinNoeud;
     @FXML
     private Button supprimerNoeud;
     @FXML
+    private Button supprimerTache;
+    @FXML
     private ImageView imageVue;
+    
+    Graphe listePersonnes = new Graphe("personne", TypeGraphe.SIMPLE_N_O);
+    Graphe listeTaches = new Graphe("personne", TypeGraphe.SIMPLE_N_O);
     
     //Objet servant de référence à notre classe principale
     //afin de pouvoir récupérer la liste de nos objets.
     private MainClass main;
     
     private Exporter exporter = new Exporter();
-    
-    private ObservableList<Tache> taches = FXCollections.observableArrayList();
-    
-    public ObservableList<Tache> getTache() {
-    	return taches;
-    }
 
     //Méthode qui initialise notre interface graphique
     //avec nos données métier
     @FXML
     private void initialize() {
     	
-    	taches.add(new Tache("T1", "Première tache", 3));
-    	taches.add(new Tache("T2", "Deuxième tache", 7));
-    	taches.add(new Tache("T3", "Troisième tache", 4));
-    	taches.add(new Tache("T4", "Quatrième tache", 6));
-    	taches.add(new Tache("T5", "Cinquième tache", 5));
-    	taches.add(new Tache("T6", "Sixième tache", 3));
-    	taches.add(new Tache("T7", "Septième tache", 2));
-    	
-    	
-    	taches.get(2).ajouterPredecesseur(taches.get(0));
-    	taches.get(3).ajouterPredecesseur(taches.get(0));
-    	taches.get(3).ajouterPredecesseur(taches.get(1));
-    	taches.get(4).ajouterPredecesseur(taches.get(2));
-    	taches.get(5).ajouterPredecesseur(taches.get(2));
-    	taches.get(5).ajouterPredecesseur(taches.get(3));
-    	taches.get(6).ajouterPredecesseur(taches.get(5));
-    	
-    	
         // Initialize the graphe list.
     	nomTacheValeur.setText("");
     	listePredecesseur.setText("");
     	labelListeVoisin.setVisible(false);
-    	modifierNoeud.setVisible(false);
     	voisinNoeud.setVisible(false);
     	supprimerNoeud.setVisible(false);
-    	listeLabel.setCellValueFactory(cellData -> cellData.getValue().getLabel());
-    	listeLibelle.setCellValueFactory(cellData -> cellData.getValue().getLibelle());
-    	listeDuree.setCellValueFactory(cellData -> cellData.getValue().getDuree().asString());
-    	listePredecesseurs.setCellValueFactory(cellData -> cellData.getValue().getPredecesseursToString());
+    	supprimerTache.setVisible(false);
     	
-    	tache.setItems(taches);
-    	tache.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> initializeDescription(newValue));
+    	personneLabel.setCellValueFactory(cellData -> cellData.getValue().getLabel());
+    	tacheLabel.setCellValueFactory(cellData -> cellData.getValue().getSuccesseursToString());
+    	
+    	ipersonneLabel.setCellValueFactory(cellData -> cellData.getValue().getLabel());
+    	//itacheLabel.setCellValueFactory(cellData -> cellData.getValue().getPredecesseursToString());
+    	
+    	personnes.setItems(listePersonnes.getListeNoeud());
+    	taches.setItems(listeTaches.getListeNoeud());
+    	personnes.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> initializePersonnes(newValue));
+    	taches.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> initializeTaches(newValue));
     }
 
     /**
@@ -119,6 +106,10 @@ public class OrdonnancementMapping {
         main.setTypeGraphe(TypeGraphe.PONDERE_O);
     }
     
+    public Graphe getTache() {
+    	return listeTaches;
+    }
+    
     /**
 	 * <b>Class initializeDescription</b><br><br>
 	 * 
@@ -126,15 +117,15 @@ public class OrdonnancementMapping {
 	 * 
 	 * @param newValue Noeud sélectionné
 	 */
-    public void initializeDescription(Tache newValue) {
+    public void initializePersonnes(Noeud newValue) {
     	
     	//On réinitialise par défaut
     	nomTacheValeur.setText("");
     	listePredecesseur.setText("");
     	labelListeVoisin.setVisible(false);
-    	modifierNoeud.setVisible(false);
     	voisinNoeud.setVisible(false);
     	supprimerNoeud.setVisible(false);
+    	supprimerTache.setVisible(false);
     	
     	setGraphe();
     	
@@ -143,52 +134,76 @@ public class OrdonnancementMapping {
     		//ATTENTION : les accesseurs retournent des objets Property Java FX
     		//Pour récupérer leurs vrais valeurs vous devez utiliser la méthode get()
     		nomTacheValeur.setText(newValue.getLabel().get());
-    		listePredecesseur.setText(newValue.getPredecesseursToString().get());
+    		listePredecesseur.setText(newValue.getSuccesseursToString().get());
     		labelListeVoisin.setVisible(true);
-    		modifierNoeud.setVisible(true);
     		voisinNoeud.setVisible(true);
         	supprimerNoeud.setVisible(true);
     	}
     }
     
+ public void initializeTaches(Noeud newValue) {
+    	
+    	//On réinitialise par défaut
+    	nomTacheValeur.setText("");
+    	listePredecesseur.setText("");
+    	labelListeVoisin.setVisible(false);
+    	voisinNoeud.setVisible(false);
+    	supprimerNoeud.setVisible(false);
+    	supprimerTache.setVisible(false);
+    	
+    	setGraphe();
+    	
+    	//Si un objet est passé en paramètre, on modifie l'IHM
+    	if(newValue != null) {
+    		//ATTENTION : les accesseurs retournent des objets Property Java FX
+    		//Pour récupérer leurs vrais valeurs vous devez utiliser la méthode get()
+    		nomTacheValeur.setText(newValue.getLabel().get());
+    		supprimerTache.setVisible(true);
+    	}
+    }
+    
     @FXML
-	public void modifierTache() {
-    	int index = tache.getSelectionModel().getSelectedIndex();
+	public void supprimerTache() {
+    	int index = taches.getSelectionModel().getSelectedIndex();
     	//Si aucune ligne n'est sélectionnée, index vaudra -1
     	if (index > -1) {
-    		main.afficheModifierTache(taches.get(index), "Modifification d'une tâche");
+    		for(Noeud neud : listePersonnes.getListeNoeud()) {
+    			if(neud.getNbVoisins() > 0) {
+	    			for(Noeud ne : neud.getSuccesseurs()) {
+	    				if(ne.getLabel().get().equals(listeTaches.getNoeudIndex(index).getLabel().get())) {
+	    					neud.enleveVoisin(ne);
+	    				}
+	    			}
+    			}
+    		}
+    		listeTaches.deleteNoeud(index);
     		setGraphe();
+    	}
+    	else {
+    		Alert probleme = new Alert(AlertType.ERROR);
+    		probleme.setTitle("Erreur");
+    		probleme.setHeaderText("Veuillez sélectionnez un noeud");
+    		probleme.showAndWait();
     	}
 	}
     
     @FXML
    	public void creerPredecesseur() {
-       	int index = tache.getSelectionModel().getSelectedIndex();
+    	int index = personnes.getSelectionModel().getSelectedIndex();
        	//Si aucune ligne n'est sélectionnée, index vaudra -1
        	if (index > -1) {
-       		main.afficheCreerPredecesseurs(taches.get(index), taches, "Créer prédécesseurs");
-       		listeLabel.setCellValueFactory(cellData -> cellData.getValue().getLabel());
-        	listeLibelle.setCellValueFactory(cellData -> cellData.getValue().getLibelle());
-        	listeDuree.setCellValueFactory(cellData -> cellData.getValue().getDuree().asString());
-        	listePredecesseurs.setCellValueFactory(cellData -> cellData.getValue().getPredecesseursToString());
-        	
-        	tache.setItems(taches);
-        	
-       		setGraphe();
+       		main.afficheCreerVoisin(listePersonnes.getNoeudIndex(index), "Soliciter tâche", listeTaches);
+       		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
        	}
    	}
     
     @FXML
-    public void supprimerTache() {
-    	int index = tache.getSelectionModel().getSelectedIndex();
+    public void supprimerPersonne() {
+    	int index = personnes.getSelectionModel().getSelectedIndex();
     	//Si aucune ligne n'est sélectionnée, index vaudra -1
     	if (index > -1) {
-    		for(Tache t : taches) {
-    			if(!t.getLabel().get().equals(taches.get(index).getLabel().get()))
-    				t.enleverPredecesseur(taches.get(index));
-    		}
-    		taches.remove(index);
-    		setGraphe();
+    		listePersonnes.deleteNoeud(index);
+    		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     	}
     	else {
     		Alert probleme = new Alert(AlertType.ERROR);
@@ -199,55 +214,40 @@ public class OrdonnancementMapping {
     }
     
     public void setGraphe() {
-    	Graphe graphe = new Graphe("Ordonnancement", TypeGraphe.PONDERE_O);
+    	Graphe graphe = new Graphe("Flot", TypeGraphe.PONDERE_O);
     	Noeud source = new Noeud("S");
     	graphe.creerNoeud(source);
     	Noeud puit = new Noeud("P");
     	graphe.creerNoeud(puit);
-    	ArrayList<Noeud> neuds = new ArrayList<Noeud>();
     	
-    	for(Tache tache : taches) {
-    		Noeud neud = new Noeud(tache.getLabel().get());
-    		neuds.add(neud);
+    	for(Noeud neud: listePersonnes.getListeNoeud()) {
+    		source.ajouteVoisin(neud, 1);
     		graphe.creerNoeud(neud);
     	}
     	
-    	int i = 0;
-    	for(Tache tache : taches) {
-    		if(tache.getPredecesseurs().isEmpty()) {
-    			source.ajouteVoisin(neuds.get(i), 0);
-    		} else {
-    			for(Tache tacheP : tache.getPredecesseurs()) {
-    				for(Noeud neu : neuds) {
-    					if(neu.getLabel().get().equals(tacheP.getLabel().get())) {
-    						neu.ajouteVoisin(neuds.get(i), tacheP.getDuree().get());
-    					}
-    				}
-    			}
-    		}
-    		i++;
+    	for(Noeud neud: listeTaches.getListeNoeud()) {
+    		Noeud neu = new Noeud(neud.getLabel().get());
+    		for(Noeud n: listePersonnes.getListeNoeud()) {
+        		if(n.estVoisin(neud) != -1) {
+        			n.ajouteVoisin(neu, 1);
+        			n.enleveVoisin(neud);
+        		}
+        	}
+    		neu.ajouteVoisin(puit, 1);
+    		graphe.creerNoeud(neu);
     	}
     	
-    	for(Noeud neu : neuds) {
-    		if(neu.getNbVoisins() == 0) {
-    			for(Tache tache : taches) {
-    				if(tache.getLabel().get().equals(neu.getLabel().get())) {
-    					neu.ajouteVoisin(puit, tache.getDuree().get());
-    				}
-    			}
-    		}
-    	}
-    	
-    	main.setGrapheOrdonnancement(graphe);
+    	main.setGrapheFlot(graphe);
     	
     	exporter.exporterFichierOriente(main.getGraphe(), "sauvegarde");
     	imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     	
-    	tache.refresh();
+    	personnes.refresh();
+    	taches.refresh();
     }
 
     public List<HashMap<Noeud, Double>>  ordonnancer(){
-    	if(!taches.isEmpty()) {
+    	if(!main.getGraphe().getListeNoeud().isEmpty()) {
     		//On recherche un circuit positif
     		Boolean circuit = false;
     		setGraphe();
@@ -308,5 +308,52 @@ public class OrdonnancementMapping {
     			max -= debut.getPoidsUnSucesseur(neud.getId());
     		}
     	}
+    }
+    
+    @FXML
+    public void creerPersonneMenu() {
+    	String nom = JOptionPane.showInputDialog(null, "Entrez le nom de la personne :",
+				"Création d'une personne", JOptionPane.PLAIN_MESSAGE);
+    	
+    	if(nom != null && !nom.isEmpty()) {
+    		listePersonnes.creerNoeud(new Noeud(nom));
+    		setGraphe();
+    	}
+    }
+    
+    @FXML
+    public void creerTacheMenu() {
+    	String nom = JOptionPane.showInputDialog(null, "Entrez le nom de la tâche :",
+				"Création d'une tâche", JOptionPane.PLAIN_MESSAGE);
+    	
+    	if(nom != null && !nom.isEmpty()) {
+    		listeTaches.creerNoeud(new Noeud(nom));
+    		setGraphe();
+    	}
+    }
+    
+    @FXML
+    public void sauvegarderFlot() {
+    	JFileChooser fileChooser = new JFileChooser();
+    	JFrame frame = new JFrame();
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		int result = fileChooser.showSaveDialog(frame);
+		frame.dispose();
+		if (result == JFileChooser.APPROVE_OPTION) {
+			exporter.sauverFlot(listePersonnes, listeTaches, fileChooser.getSelectedFile());
+		}
+    }
+    
+    @FXML
+    public void ouvrirFlot() {
+    	JFileChooser fileChooser = new JFileChooser();
+    	JFrame frame = new JFrame();
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		int result = fileChooser.showOpenDialog(frame);
+		frame.dispose();
+		if (result == JFileChooser.APPROVE_OPTION) {
+			exporter.lireFlot(fileChooser.getSelectedFile(), listePersonnes, listeTaches);
+			setGraphe();
+		}
     }
 }

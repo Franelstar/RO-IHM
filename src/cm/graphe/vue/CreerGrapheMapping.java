@@ -93,37 +93,13 @@ public class CreerGrapheMapping {
 	 * Cette méthode permet de sauvegarder le graphe.<br>
 	 */
 	public void valider() {
-		if(controlerFormulaire()) {
-			if(main.getSauver()) {
-				
-				TypeGraphe t_g = main.getTypeGraphe();
-				Graphe gra = new Graphe("", t_g);
-				
-				gra.setNom(new SimpleStringProperty(creerGrapheFormulaire.getText()));
-				main.setGraphe(gra);
-				
-				//On ferme la boîte de dialogue
-				stageDialogue.close();
-			}
-			else {
-				Alert erreur = new Alert(AlertType.CONFIRMATION);
-				erreur.setTitle("Attention ! ");
-				StringBuilder sb = new StringBuilder();
-				List<String> messageErreur = new ArrayList<>();
-				messageErreur.add("Voulez vous continuer sans sauvegarder le graphe en cour ?");
-				messageErreur.stream().forEach((x) -> sb.append("\n" + x));
-				erreur.setHeaderText(sb.toString());
-				erreur.showAndWait();
-				
-				if (erreur.getResult() == ButtonType.OK) {
-					main.getGraphe().setNom(new SimpleStringProperty(creerGrapheFormulaire.getText()));
-					main.getGraphe().setTypeGraphe(main.getTypeGraphe());
-					main.getListDeNoeud().clear();
-				}
-				
-				//On ferme la boîte de dialogue
-				stageDialogue.close();
-			}
-		}
+		TypeGraphe t_g = main.getTypeGraphe();
+		Graphe gra = new Graphe("", t_g);
+		
+		gra.setNom(new SimpleStringProperty(creerGrapheFormulaire.getText()));
+		main.setGraphe(gra);
+		
+		//On ferme la boîte de dialogue
+		stageDialogue.close();
 	}
 }

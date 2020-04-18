@@ -62,14 +62,22 @@ public class MenuMapping {
     MenuItem ordonnancer;
     @FXML
     MenuItem fordMenu;
-    
+    @FXML
+    MenuItem personneMenu;
+    @FXML
+    MenuItem tacheMenu;
+    @FXML
+    MenuItem edmonsMenu;
     
     //Méthode qui sera utilisée dans l'initialisation de l'IHM
     //dans notre classe principale
     public void setMainApp(MainClass mainApp) {
         this.main = mainApp;
-        sauverG.setDisable(true);
-        nouvMenu.setDisable(true);
+    }
+    
+    public void activeMenus() {
+    	sauverG.setDisable(false);
+    	nouvMenu.setDisable(false);
         bfsMenu.setDisable(true);
     	dfsMenu.setDisable(true);
     	primMenu.setDisable(true);
@@ -79,11 +87,7 @@ public class MenuMapping {
     	bellmanMenu.setDisable(true);
     	ordonnancer.setDisable(true);
     	fordMenu.setDisable(true);
-    }
-    
-    public void activeMenus() {
-    	sauverG.setDisable(false);
-    	nouvMenu.setDisable(false);
+    	edmonsMenu.setDisable(true);
     	
     	if(main.getTypeGraphe() != null) {
 	    	switch (main.getTypeGraphe()) {
@@ -103,8 +107,12 @@ public class MenuMapping {
 					break;
 				case PONDERE_O:
 					bellmanMenu.setDisable(false);
-					fordMenu.setDisable(false);
 					dijkstraMenu.setDisable(false);
+					break;
+				case SIMPLE_0:
+					bellmanMenu.setDisable(false);
+					dijkstraMenu.setDisable(false);
+					break;
 				default:
 					break;
 			}
@@ -114,30 +122,38 @@ public class MenuMapping {
     public void activeMenusOrdonnancement() {
     	nouvelleTache.setDisable(false);
     	ordonnancer.setDisable(false);
+    	bfsMenu.setDisable(true);
+     	dfsMenu.setDisable(true);
+     	primMenu.setDisable(true);
+     	kruskalMenu.setDisable(true);
+     	dijkstraMenu.setDisable(true);
+     	bellmanMenu.setDisable(true);
+     	fordMenu.setDisable(true);
+     	edmonsMenu.setDisable(true);
+     	sauverG.setDisable(true);
+    	nouvMenu.setDisable(true);
+    }
+    
+    public void activeMenusFlot() {
+    	fordMenu.setDisable(false);
+    	edmonsMenu.setDisable(false);
+    	sauverG.setDisable(true);
+    	nouvMenu.setDisable(true);
+    	nouvelleTache.setDisable(true);
+    	ordonnancer.setDisable(true);
+    	bfsMenu.setDisable(true);
+     	dfsMenu.setDisable(true);
+     	primMenu.setDisable(true);
+     	kruskalMenu.setDisable(true);
+     	dijkstraMenu.setDisable(true);
+     	bellmanMenu.setDisable(true);
     }
     
 	//Fermer l'application
 	@FXML
 	public void fermer() {
-		if(main.getSauver()) {
-			//Et on clos le stage principal, donc l'application
-			this.main.getStage().close();
-		}
-		else {
-			Alert erreur = new Alert(AlertType.CONFIRMATION);
-			erreur.setTitle("Attention ! ");
-			StringBuilder sb = new StringBuilder();
-			List<String> messageErreur = new ArrayList<>();
-			messageErreur.add("Voulez vous continuer sans sauvegarder le graphe en cour ?");
-			messageErreur.stream().forEach((x) -> sb.append("\n" + x));
-			erreur.setHeaderText(sb.toString());
-			erreur.showAndWait();
-			
-			if (erreur.getResult() == ButtonType.OK) {
-				//Et on clos le stage principal, donc l'application
-				this.main.getStage().close();
-			}
-		}
+		//Et on clos le stage principal, donc l'application
+		this.main.getStage().close();
 	}
 	
 	@FXML
@@ -154,7 +170,6 @@ public class MenuMapping {
 		frame.dispose();
 		if (result == JFileChooser.APPROVE_OPTION) {
 			exporter.sauverGraphe(main.getGraphe(), fileChooser.getSelectedFile());
-	    	main.setSauver(true);
 		}
     }
     
@@ -162,28 +177,24 @@ public class MenuMapping {
     public void creerGraphe() {
     	this.main.setTypeGraphe(TypeGraphe.SIMPLE_N_O);
     	this.main.creerGraphe("Création d'un nouveau graphe non orienté non pondéré");
-    	main.setSauver(false);
     }
     
     @FXML
     public void creerGraphePondere() {
     	this.main.setTypeGraphe(TypeGraphe.PONDERE_N_O);
     	this.main.creerGraphe("Création d'un nouveau graphe non orienté pondéré");
-    	main.setSauver(false);
     }
     
     @FXML
     public void creerGraphePondereO() {
     	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
     	this.main.creerGraphe("Création d'un nouveau graphe orienté pondéré");
-    	main.setSauver(false);
     }
     
     @FXML
     public void creerGrapheNPondereO() {
     	this.main.setTypeGraphe(TypeGraphe.SIMPLE_0);
     	this.main.creerGraphe("Création d'un nouveau graphe orienté non pondéré");
-    	main.setSauver(false);
     }
     
     @FXML
@@ -200,45 +211,20 @@ public class MenuMapping {
     
     @FXML
     public void openFileLocation() {
-    	if(main.getSauver()) {
-    		JFileChooser fileChooser = new JFileChooser();
-	    	JFrame frame = new JFrame();
-			fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-			int result = fileChooser.showOpenDialog(frame);
-			frame.dispose();
-			if (result == JFileChooser.APPROVE_OPTION) {
-				if(main.getGraphe() == null) {
-					main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
-					main.setTypeGraphe(main.getGraphe().getTypeGraphe());
-					activeMenus();
-				}else {
-					main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
-					main.setTypeGraphe(main.getGraphe().getTypeGraphe());
-					activeMenus();
-				}
-			}
-		}
-		else {
-			Alert erreur = new Alert(AlertType.CONFIRMATION);
-			erreur.setTitle("Attention ! ");
-			StringBuilder sb = new StringBuilder();
-			List<String> messageErreur = new ArrayList<>();
-			messageErreur.add("Voulez vous continuer sans sauvegarder le graphe en cour ?");
-			messageErreur.stream().forEach((x) -> sb.append("\n" + x));
-			erreur.setHeaderText(sb.toString());
-			erreur.showAndWait();
-			
-			if (erreur.getResult() == ButtonType.OK) {
-				JFileChooser fileChooser = new JFileChooser();
-		    	JFrame frame = new JFrame();
-				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-				int result = fileChooser.showOpenDialog(frame);
-				frame.dispose();
-				if (result == JFileChooser.APPROVE_OPTION) {
-					main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
-					main.setTypeGraphe(main.getGraphe().getTypeGraphe());
-					activeMenus();
-				}
+    	JFileChooser fileChooser = new JFileChooser();
+    	JFrame frame = new JFrame();
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		int result = fileChooser.showOpenDialog(frame);
+		frame.dispose();
+		if (result == JFileChooser.APPROVE_OPTION) {
+			if(main.getGraphe() == null) {
+				main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
+				main.setTypeGraphe(main.getGraphe().getTypeGraphe());
+				activeMenus();
+			}else {
+				main.setGraphe(exporter.lireGraphe(fileChooser.getSelectedFile()));
+				main.setTypeGraphe(main.getGraphe().getTypeGraphe());
+				activeMenus();
 			}
 		}
     }
@@ -287,12 +273,11 @@ public class MenuMapping {
     public void creerTache() {
     	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
     	this.main.creerOrdonnancement("Création d'un nouveau ordonnancement");
-    	main.setSauver(false);
     }
     
     @FXML
     public void fordFulkerson() {
-    	this.main.creerChemin("Création de flot à valeur maximale (Algorithme de Ford - Fulkerson)", "FORDFULKERSON");
+    	this.main.creerCheminFlot("Création de flot à valeur maximale (Algorithme de Ford - Fulkerson)");
     }
     
     @FXML
@@ -303,5 +288,16 @@ public class MenuMapping {
     @FXML
     public void menuOrdonnancer() {
     	this.main.ordonnancer();
+    }
+    
+    @FXML
+    public void creerFlot() {
+    	this.main.setTypeGraphe(TypeGraphe.PONDERE_O);
+    	this.main.creerFlot();
+    }
+    
+    @FXML
+    public void creerEdmonsMenu() {
+    	
     }
 }

@@ -20,6 +20,7 @@ import cm.graphe.model.Graphe;
 import cm.graphe.model.Noeud;
 import cm.graphe.model.TypeGraphe;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 
 public class Exporter {
 	
@@ -95,6 +96,65 @@ public class Exporter {
         }
 	}
 	
+	public void lireFlot(File f, Graphe personnes, Graphe taches) {
+		try {
+            b = new BufferedReader(new FileReader(f));
+            String readLine = "";
+            int controle = 1;
+            int nbreNoeudPersonne = 0;
+            int nbreNoeudTache = 0;
+            
+            while ((readLine = b.readLine()) != null) {
+            	if(controle == 1) {
+            		nbreNoeudPersonne = Integer.parseInt(readLine.trim());
+            	}
+            	if(controle == 2) {
+            		nbreNoeudTache = Integer.parseInt(readLine.trim());
+            	}
+            	if(controle == 3) {
+            		String[] parts = readLine.trim().split("---");
+            		for(int i = 0; i < nbreNoeudTache; i++) {
+            			taches.creerNoeud(new Noeud(parts[i]));
+            		}
+            		Thread.sleep(0,5 * 1000);
+            	}
+            	if(controle > 3) {
+            		String[] parts = readLine.trim().split("---");
+            		Noeud neud = new Noeud(parts[0]);
+            		for(int i = 1; i < parts.length; i++) {
+            			neud.ajouteVoisin(taches.getNoeud(parts[i]), 1);
+            		}
+            		personnes.creerNoeud(neud);
+            		Thread.sleep(0,5 * 1000);
+            	}
+            	controle++;
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public void exporterFlot(ObservableList<Noeud> flot, File sortie) {
+		try {
+			BufferedWriter buf = new BufferedWriter( 
+			new OutputStreamWriter(
+					new FileOutputStream( sortie ), Charset.forName("UTF-8").newEncoder()
+				)
+			);
+			
+			String line;
+			
+			for(Noeud neud : flot) {
+				buf.write(neud.getSuccesseurs().get(0).getLabel().get() + " ----> " + neud.getLabel().get() + "\n");
+			}
+			
+			buf.close();
+		}
+		catch ( Exception e ) {			
+			e.printStackTrace();
+		}
+	}
+	
 	public void sauverGraphe(Graphe graphe, File sortie) {
 		try {
 			BufferedWriter buf = new BufferedWriter( 
@@ -140,6 +200,44 @@ public class Exporter {
 						buf.write(line);
 					}
 				}
+			}
+			
+			buf.close();
+		}
+		catch ( Exception e ) {			
+			e.printStackTrace();
+		}
+	}
+	
+	public void sauverFlot(Graphe personnes, Graphe taches, File sortie) {
+		try {
+			BufferedWriter buf = new BufferedWriter( 
+					new OutputStreamWriter(
+							new FileOutputStream( sortie ), Charset.forName("UTF-8").newEncoder()
+							)
+					);
+			
+			String line;
+			
+			buf.write(personnes.getNbNoeuds() + "\n");
+			
+			buf.write(taches.getNbNoeuds() + "\n");
+			
+			for ( Noeud v : taches.getListeNoeud() ) {
+				line = v.getLabel().get() + "---";
+				buf.write(line);
+			}
+									
+			for ( Noeud v : personnes.getListeNoeud() ) {
+				line = v.getLabel().get();
+				if ( v.getNbVoisins() > 0 ) {
+					line += "---";
+					for ( Noeud u : v.getSuccesseurs() ) {
+						line += u.getLabel().get() + "---";
+					}
+				}
+				buf.write("\n");
+				buf.write(line);
 			}
 			
 			buf.close();

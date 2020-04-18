@@ -56,9 +56,7 @@ public class CreerPredecesseurMapping {
 		
 		for(CheckBox che : voisins) {
 			vbox.getChildren().add(che);
-		}
-		
-		
+		}		
 	}
 	
 	/**
@@ -118,7 +116,6 @@ public class CreerPredecesseurMapping {
 			}
 			
 			//On ferme la boîte de dialogue
-			main.setSauver(false);
 			stageDialogue.close();
 		} else {
 			Alert erreur = new Alert(AlertType.WARNING);

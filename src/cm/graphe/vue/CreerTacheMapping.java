@@ -125,12 +125,12 @@ private Stage stageDialogue;
 	public void sauvegarder() {
 		if(controlerFormulaire()) {
 
-			//S'il s'agit d'une création, on ajoute la personne dans le tableau
+			//S'il s'agit d'une création
 			if(stageDialogue.getTitle().startsWith("Création")) {
 				//main.getGraphe().creerNoeud(noeud);
 				Tache t = new Tache(labelFormulaire.getText(), libelleFormulaire.getText(), Integer.parseInt(dureeFormulaire.getText()));
 				taches.add(t);
-				oTaches.getTache();
+				//oTaches.getTache();
 			}
 			else {
 				tache.setLabel(labelFormulaire.getText());
@@ -139,7 +139,6 @@ private Stage stageDialogue;
 			}
 
 			//On ferme la boîte de dialogue
-			main.setSauver(false);
 			stageDialogue.close();
 		}
 	}

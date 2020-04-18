@@ -63,7 +63,6 @@ public class DiagrammeOrdonnancementMapping extends Application {
         //creating the chart
         
                 
-        diagramme.setTitle("Durée optimale pour le projet : ");
         //defining a series
         ArrayList<XYChart.Series> series = new ArrayList<XYChart.Series>();
         for (Noeud key : minDebut.keySet()) {

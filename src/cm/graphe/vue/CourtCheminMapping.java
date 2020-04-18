@@ -166,7 +166,6 @@ public class CourtCheminMapping {
 			Graphe grapheResiduel = new Graphe("", TypeGraphe.PONDERE_O);
 			
 			while(RechercheCheminDFS(grapheResiduel, null, main.getGraphe().getNoeud(debut), main.getGraphe().getNoeud(fin), etat, false)) {
-				
 				//On recupere le plus petit poid
 				int valeurAuglentee = (int) Float.POSITIVE_INFINITY;
 				for(Noeud neud : grapheResiduel.getListeNoeud()) {
@@ -201,6 +200,9 @@ public class CourtCheminMapping {
 					etat.put(neu, "0");
 				}
 				grapheResiduel = new Graphe("", TypeGraphe.PONDERE_O);
+				
+				exporter.exporterFichierOriente(main.getGraphe(), "sauvegardeArbre");
+				imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
 			}
 			
 			int flot = 0;
@@ -212,7 +214,7 @@ public class CourtCheminMapping {
 			valeurFlot.setText(String.valueOf(flot));
 			exporter.exporterFichierOriente(main.getGraphe(), "sauvegardeArbre");
 			imageArbre.setImage(new Image(new File("sauvegardeArbre.png").toURI().toString()));
-			main.setGraphe(grapheOld);
+			main.setGrapheFlot(grapheOld);
 		}
 	}
 	

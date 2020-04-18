@@ -192,7 +192,7 @@ public class GrapheMapping {
        	int index = graphe.getSelectionModel().getSelectedIndex();
        	//Si aucune ligne n'est sélectionnée, index vaudra -1
        	if (index > -1) {
-       		main.afficheCreerVoisin(main.getGraphe().getNoeudIndex(index), "Créer Voisins");
+       		main.afficheCreerVoisin(main.getGraphe().getNoeudIndex(index), "Créer Voisins", null);
        		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
        	}
    	}
@@ -203,7 +203,6 @@ public class GrapheMapping {
     	//Si aucune ligne n'est sélectionnée, index vaudra -1
     	if (index > -1) {
     		main.getGraphe().deleteNoeud(index);
-    		main.setSauver(false);
     		imageVue.setImage(new Image(new File("sauvegarde.png").toURI().toString()));
     	}
     	else {
