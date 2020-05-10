@@ -124,6 +124,7 @@ public class MainClass extends Application {
 			//On spécifie la classe principale afin de pour récupérer le Stage
 			//Et ainsi fermer l'application
 			controleur.setMainApp(this);
+			controleur.initialMenu();
 			
 			//Pour l'afficher
 			stagePrincipal.show();

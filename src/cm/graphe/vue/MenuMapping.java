@@ -75,6 +75,21 @@ public class MenuMapping {
         this.main = mainApp;
     }
     
+    public void initialMenu() {
+    	sauverG.setDisable(true);
+    	nouvMenu.setDisable(true);
+        bfsMenu.setDisable(true);
+    	dfsMenu.setDisable(true);
+    	primMenu.setDisable(true);
+    	kruskalMenu.setDisable(true);
+    	dijkstraMenu.setDisable(true);
+    	nouvelleTache.setDisable(true);
+    	bellmanMenu.setDisable(true);
+    	ordonnancer.setDisable(true);
+    	fordMenu.setDisable(true);
+    	edmonsMenu.setDisable(true);
+    }
+    
     public void activeMenus() {
     	sauverG.setDisable(false);
     	nouvMenu.setDisable(false);
@@ -203,7 +218,7 @@ public class MenuMapping {
 		erreur.setTitle("A propos ");
 		StringBuilder sb = new StringBuilder();
 		List<String> messageErreur = new ArrayList<>();
-		messageErreur.add("Créé par Franck Anael MBIAYA ?");
+		messageErreur.add("Créé par Franck Anael MBIAYA");
 		messageErreur.stream().forEach((x) -> sb.append("\n" + x));
 		erreur.setHeaderText(sb.toString());
 		erreur.showAndWait();
